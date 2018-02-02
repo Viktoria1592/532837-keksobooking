@@ -6,8 +6,8 @@ var headers = ['Большая уютная квартира', 'Маленька
 var typesOfFlat = ['flat', 'house', 'bungalo'];
 var checkinTimes = ['12:00', '13:00', '14:00'];
 var checkoutTimes = ['12:00', '13:00', '14:00'];
-var featuresList = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var images = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel1.jpg'];
+var features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var images = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
 
 var generateRandomNumber = function (min, max) {
@@ -40,7 +40,7 @@ var shuffleArray = function (array) {
 var generateArrayWithRandomLenght = function (array) {
   var newArray = [];
   var numberOfArrayItems = generateRandomNumber(1, array.length);
-  var randomItemNumber = generateRandomNumber(0, array.length - numberOfArrayItems)
+  var randomItemNumber = generateRandomNumber(0, array.length - numberOfArrayItems);
   for (var i = 0; i < numberOfArrayItems; i++) {
     newArray[i] = array[randomItemNumber + i];
   }
@@ -67,7 +67,7 @@ var generateAdvertObject = function () {
       'guests': generateRandomNumber(2, 10),
       'checkin': generateRandomArrayValue(checkinTimes),
       'checkout': generateRandomArrayValue(checkoutTimes),
-      'features': generateArrayWithRandomLenght(featuresList),
+      'features': generateArrayWithRandomLenght(features),
       'description': '',
       'photos': shuffleArray(images)
     },
@@ -88,11 +88,14 @@ for (var i = 0; i < ADVERTS_COUNT; i++) {
 var mapFaded = document.querySelector('.map');
 mapFaded.classList.remove('map--faded');
 
-var label = document.querySelector('template').content.querySelectorAll('button')[1];
+var templateOfLabel = document.querySelector('template').content.querySelector('article + button');
 var renderAdvert = function (advert) {
-  var newAdvert = label.cloneNode(true);
-  newAdvert.style.left = '' + advert.location.x + 'px';
-  newAdvert.style.top = '' + advert.location.y + 'px';
+  var newAdvert = templateOfLabel.cloneNode(true);
+  newAdvert.style.left = advert.location.x + 'px';
+  newAdvert.style.top = advert.location.y + 'px';
+  console.log(newAdvert.style.left);
+  console.log(newAdvert.style.top);
+
   newAdvert.querySelector('img').src = advert.author.avatar;
   return newAdvert;
 };
@@ -108,7 +111,9 @@ var card = document.querySelector('template').content.querySelector('article.map
 var renderCard = function (advert) {
   var newCard = card.cloneNode(true);
   newCard.querySelector('h3').textContent = advert.offer.title;
-  newCard.querySelector('p small').textContent = advert.location.x + ' ' + advert.location.y;
+  newCard.querySelector('p small').textContent = advert.location.x + ', ' + advert.location.y;
+// аналог для вывода адресса
+// newCard.querySelector('p small').textContent = advert.offer.address;
   newCard.querySelector('.popup__price').textContent = advert.offer.price + ' \u20BD/ночь';
   if (advert.offer.type === 'flat') {
     newCard.querySelector('h4').textContent = 'Квартира';
@@ -117,8 +122,8 @@ var renderCard = function (advert) {
   } else {
     newCard.querySelector('h4').textContent = 'Бунгало';
   }
-  newCard.querySelectorAll('p')[2].textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
-  newCard.querySelectorAll('p')[3].textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
+  newCard.querySelector('h4 + p').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
+  newCard.querySelector('h4 + p + p').textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
   var popupFatures = newCard.querySelector('.popup__features');
   popupFatures.textContent = '';
   for (var m = 0; m < advert.offer.features.length; m++) {
@@ -127,7 +132,6 @@ var renderCard = function (advert) {
     newFeature.classList.add('feature--' + advert.offer.features[m]);
     popupFatures.appendChild(newFeature);
   }
-  console.log(advert.offer.features);
 
   newCard.querySelector('ul.popup__features + p').textContent = advert.offer.description;
   var popupPictures = newCard.querySelector('ul.popup__pictures');
@@ -135,7 +139,7 @@ var renderCard = function (advert) {
   for (var n = 0; n < advert.offer.photos.length; n++) {
     var newImage = card.querySelector('ul.popup__pictures li img').cloneNode(true);
     newImage.src = advert.offer.photos[n];
-    newImage.height = 130;
+    newImage.height = 90;
     popupPictures.appendChild(newImage);
   }
 
@@ -145,7 +149,8 @@ var renderCard = function (advert) {
 
 var fragmentForPopup = document.createDocumentFragment();
 for (var o = 0; o < adverts.length; o++) {
-  fragmentForPopup.appendChild(renderCard(adverts[o]));
+  var hohoho = fragmentForPopup.appendChild(renderCard(adverts[o]));
+  console.log(hohoho);
 }
 var mapPopup = document.querySelector('section.map');
 var referenceElement = document.querySelector('div.map__filters-container');
