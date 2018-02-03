@@ -118,6 +118,40 @@ var generateAdvertObject = function (step) {
   return newAdvertObject;
 };
 
+/**
+ * Функция заполнения раздела особенностей жилья
+ * @param {object} advertObject  объект с данными объявления
+ * @param {node}   сardTemplate  шаблон, DOM-элемент с карточкой обьявления
+ */
+var addingAdvertFeatures = function (advertObject, сardTemplate) {
+  var popupFatures = сardTemplate.querySelector('.popup__features');
+  popupFatures.textContent = '';
+
+  for (var m = 0; m < advertObject.offer.features.length; m++) {
+    var newFeature = cardTemplate.querySelector('.feature--wifi').cloneNode(true);
+    newFeature.classList.remove('feature--wifi');
+    newFeature.classList.add('feature--' + advertObject.offer.features[m]);
+    popupFatures.appendChild(newFeature);
+  }
+};
+
+/**
+ * Функция заполнения раздела особенностей жилья
+ * @param {object} advertObject  объект с данными объявления
+ * @param {node}   сardTemplate  шаблон, DOM-элемент с карточкой обьявления
+ */
+var addingAdvertImages = function (advertObject, сardTemplate) {
+  var popupPictures = сardTemplate.querySelector('ul.popup__pictures');
+  popupPictures.textContent = '';
+
+  for (var n = 0; n < advertObject.offer.photos.length; n++) {
+    var newImage = cardTemplate.querySelector('ul.popup__pictures li img').cloneNode(true);
+    newImage.src = advertObject.offer.photos[n];
+    newImage.height = FLAT_IMAGES_HEIGHT;
+    popupPictures.appendChild(newImage);
+  }
+};
+
 var adverts = [];
 for (var i = 0; i < ADVERTS_COUNT; i++) {
   adverts[i] = generateAdvertObject(i);
@@ -170,32 +204,12 @@ var renderAdvertCard = function (advert) {
   newCard.querySelector('h3').textContent = advert.offer.title;
   newCard.querySelector('p small').textContent = advert.location.x + ', ' + advert.location.y;
   newCard.querySelector('.popup__price').textContent = advert.offer.price + ' \u20BD/ночь';
-
   newCard.querySelector('h4').textContent = typeLabels[advert.offer.type];
-
   newCard.querySelector('h4 + p').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
   newCard.querySelector('h4 + p + p').textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
-  var popupFatures = newCard.querySelector('.popup__features');
-  popupFatures.textContent = '';
-
-  for (var m = 0; m < advert.offer.features.length; m++) {
-    var newFeature = cardTemplate.querySelector('.feature--wifi').cloneNode(true);
-    newFeature.classList.remove('feature--wifi');
-    newFeature.classList.add('feature--' + advert.offer.features[m]);
-    popupFatures.appendChild(newFeature);
-  }
-
+  addingAdvertFeatures(advert, newCard);
   newCard.querySelector('ul.popup__features + p').textContent = advert.offer.description;
-  var popupPictures = newCard.querySelector('ul.popup__pictures');
-  popupPictures.textContent = '';
-
-  for (var n = 0; n < advert.offer.photos.length; n++) {
-    var newImage = cardTemplate.querySelector('ul.popup__pictures li img').cloneNode(true);
-    newImage.src = advert.offer.photos[n];
-    newImage.height = FLAT_IMAGES_HEIGHT;
-    popupPictures.appendChild(newImage);
-  }
-
+  addingAdvertImages(advert, newCard);
   newCard.querySelector('img.popup__avatar').src = advert.author.avatar;
   return newCard;
 };
