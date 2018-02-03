@@ -22,7 +22,7 @@ var generateRandomNumber = function (min, max) {
 };
 
 /**
- * Функция генерирования случайного значения из переданного массива
+ * Функция генерирующая случайное значение из переданного массива
  * @param  {array} array
  * @return {number}     случайное значение из массива
  */
@@ -32,7 +32,7 @@ var generateRandomArrayValue = function (array) {
 };
 
 /**
- * Функция генерирования случайного значения из переданного массива
+ * Функция генерирующая случайное значение из переданного массива
  * (из переданного в функцию массива удаляется возвращаемое значение)
  * @param  {array} array
  * @return {number}      случайное значение из массива
@@ -60,10 +60,10 @@ var shuffleArray = function (array) {
 };
 
 /**
- * Функция генерации массива случайной длинны,
- * не длиннее чем массив, который в нее передается
- * @param  {array} array массив из которого генерируется случайный
- * @return {array}       массив случайной длинны (не длиннее чем переданный)
+ * Функция генерации массива случайной длинны, из переданого в функцию
+ * (длинна возвращаемого массива не длиннее переданого)
+ * @param  {array} array
+ * @return {array}       массив случайной длинны (не длиннее чем переданый)
  */
 var generateArrayWithRandomLenght = function (array) {
   var newArray = [];
@@ -81,7 +81,7 @@ for (var l = 0; l < AVATAR_COUNT; l++) {
 }
 
 /**
- * Функция генерации объекта с данными объявления
+ * Функция генерации объекта с данными о объявлении
  * @param  {number} step номер изображения автора
  * @return {object}      объект с данными объявления
  */
@@ -119,7 +119,7 @@ var generateAdvertObject = function (step) {
 };
 
 /**
- * Функция заполнения раздела особенностей жилья
+ * Функция заполняющая особенности жилья в карточку обьявления
  * @param {object} advertObject  объект с данными объявления
  * @param {node}   сardTemplate  шаблон, DOM-элемент с карточкой обьявления
  */
@@ -136,7 +136,7 @@ var addingAdvertFeatures = function (advertObject, сardTemplate) {
 };
 
 /**
- * Функция заполнения раздела особенностей жилья
+ * Функция заполняющая изображения жилья в карточку обьявления
  * @param {object} advertObject  объект с данными объявления
  * @param {node}   сardTemplate  шаблон, DOM-элемент с карточкой обьявления
  */
@@ -161,6 +161,13 @@ var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
 var templateOfLabel = document.querySelector('template').content.querySelector('article + button');
+
+/**
+ * Функция заполняющая положение метки на карте
+ * и изображение аватара пользователя в ней
+ * @param {object} advert объект с данными об объявлении
+ * @return {Node}         DOM-элемент метки
+ */
 var renderAdvertLabel = function (advert) {
   var newAdvert = templateOfLabel.cloneNode(true);
   newAdvert.style.left = advert.location.x + 'px';
@@ -170,7 +177,7 @@ var renderAdvertLabel = function (advert) {
 };
 
 /**
- *  Функция заполняющая данными шаблон и добавляющая заполненый шаблон в DocumentFragment
+ * Функция добавляет готовые карточки объявлений в DocumentFragment
  * @param  {array}    advertsArray     массив с объектами объявлений
  * @param  {function} renderFunction   функция заполняющая шаблон данными из advertsArray
  * @return {Node}                      DOM с элемент объявлениями
@@ -195,7 +202,7 @@ mapPins.appendChild(fragmentFilling(adverts, renderAdvertLabel));
 var cardTemplate = document.querySelector('template').content.querySelector('article.map__card');
 
 /**
- * Функция заполняющая шаблон с деталями объявления из объекта с данными
+ * Функция заполняющая шаблон карточки объявления деталями
  * @param  {object} advert объект с данными об объявлении
  * @return {Node}          DOM-элемент объявления
  */
