@@ -1,7 +1,6 @@
 'use strict';
 
 var ADVERTS_COUNT = 8;
-var AVATAR_COUNT = 8;
 var headers = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var typesOfFlat = ['flat', 'house', 'bungalo'];
 var checkinTimes = ['12:00', '13:00', '14:00'];
@@ -74,11 +73,6 @@ var generateArrayWithRandomLenght = function (array) {
   }
   return newArray;
 };
-
-var avatarImages = [];
-for (var l = 0; l < AVATAR_COUNT; l++) {
-  avatarImages[l] = l + 1;
-}
 
 /**
  * Функция генерации объекта с данными о объявлении
