@@ -174,14 +174,16 @@ var templateOfLabel = document.querySelector('template').content.querySelector('
 /**
  * Функция заполняющая положение метки на карте
  * и изображение аватара пользователя в ней
- * @param {object} advert объект с данными об объявлении
- * @return {Node}         DOM-элемент метки
+ * @param   {object} advert            объект с данными об объявлении
+ * @param   {number} uniqueClassNumber уникальное число объекта, передается в класс
+ * @return  {Node}                     DOM-элемент метки
  */
-var renderAdvertLabel = function (advert) {
+var renderAdvertLabel = function (advert, uniqueClassNumber) {
   var newAdvert = templateOfLabel.cloneNode(true);
   newAdvert.style.left = advert.location.x + 'px';
   newAdvert.style.top = advert.location.y + 'px';
   newAdvert.querySelector('img').src = advert.author.avatar;
+  newAdvert.classList.add(uniqueClassNumber);
   return newAdvert;
 };
 
@@ -189,12 +191,12 @@ var renderAdvertLabel = function (advert) {
  * Функция добавляет готовые карточки объявлений в DocumentFragment
  * @param  {array}    advertsArray     массив с объектами объявлений
  * @param  {function} renderFunction   функция заполняющая шаблон данными из advertsArray
- * @return {Node}                      DOM с элемент объявлениями
+ * @return {Node}                      DOM элемент с объявлениями
  */
 var fragmentFilling = function (advertsArray, renderFunction) {
   var fragment = document.createDocumentFragment();
   for (var k = 0; k < advertsArray.length; k++) {
-    fragment.appendChild(renderFunction(advertsArray[k]));
+    fragment.appendChild(renderFunction(advertsArray[k], k));
   }
   return fragment;
 };
@@ -209,10 +211,11 @@ var cardTemplate = document.querySelector('template').content.querySelector('art
 
 /**
  * Функция заполняющая шаблон карточки объявления деталями
- * @param  {object} advert объект с данными об объявлении
- * @return {Node}          DOM-элемент объявления
+ * @param  {object} advert            объект с данными об объявлении
+ * @param  {number} uniqueClassNumber уникальное число объекта, передается в класс
+ * @return {Node}                     DOM-элемент объявления
  */
-var renderAdvertCard = function (advert) {
+var renderAdvertCard = function (advert, uniqueClassNumber) {
   var newCard = cardTemplate.cloneNode(true);
   newCard.querySelector('h3').textContent = advert.offer.title;
   newCard.querySelector('p small').textContent = advert.location.x + (MAP_PIN_FULL_WIDTH / 2) + ', ' + (advert.location.y + MAP_PIN_FULL_HEIGHT) + '';
@@ -224,8 +227,10 @@ var renderAdvertCard = function (advert) {
   newCard.querySelector('ul.popup__features + p').textContent = advert.offer.description;
   addingAdvertImages(advert, newCard);
   newCard.querySelector('img.popup__avatar').src = advert.author.avatar;
+  newCard.classList.add(uniqueClassNumber);
   newCard.classList.add('hidden');
   newCard.querySelector('button.popup__close').tabIndex = 0;
+
   return newCard;
 };
 
@@ -280,51 +285,79 @@ var makePageActive = function () {
 returnPageToInitialState();
 
 var mapPinMain = document.querySelector('.map__pin--main');
-mapPinMain.addEventListener('mouseup', function () {
+
+/**
+ * Функция-обработчик события, по клику на главную метку делает страницу активной и заполняет адресс
+ */
+var mainPinClickHandler = function () {
   makePageActive();
   findMainPinAdress();
 
   var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
   for (var p = 0; p < similarAdvertPins.length; p++) {
     var advertPin = similarAdvertPins[p];
-    var number = p;
-    addHandlerPin(advertPin, number);
+    addHandlerPin(advertPin);
   }
+};
 
-  var advertMapCards = document.querySelectorAll('article.map__card');
-  for (var q = 0; q < advertMapCards.length; q++) {
-    var advertCard = advertMapCards[q];
-    addHandlerToAdvertCard(advertCard);
-  }
-});
-
+mapPinMain.addEventListener('click', mainPinClickHandler);
 
 /**
- *  Функция добавляющая обработчик события
- * для отображения карточки объявления после
- * нажатия на метку обьявления на карте
- * @param {object} advertPin  обьет метки, к которой добавляем обрабочик
- * @param {number} number     порядковый номер этой метки из массива меток
+ * Функция добавляет обработчик события к переданному в нее объекту метки
+ * @param {object} advertPin  DOM объект метки
  */
-var addHandlerPin = function (advertPin, number) {
-  advertPin.addEventListener('click', function () {
-    document.querySelectorAll('article.map__card')[number].classList.remove('hidden');
-  });
+var addHandlerPin = function (advertPin) {
+  advertPin.addEventListener('click', buttonClickHandler);
 };
 
 /**
+ * Функция-обработчик события, удаляет класс hiden у объекта карточки
+ * объявления и добавляет обработчик события для закрытия карточки.
+ * Также перед открытием следующих карточек - проверяет есть ли открытые и закрывает их.
+ * @param {object} evt объект event
+ */
+var buttonClickHandler = function (evt) {
+  var advertCards = document.querySelectorAll('article.map__card');
+  for (var r = 0; r < advertCards.length; r++) {
+    if (advertCards[r].classList[3] !== 'hidden') {
+      advertCards[r].classList.add('hidden');
+    }
+  }
+  if (evt.path[0].tagName === 'IMG') {
+    document.querySelectorAll('article.map__card')[parseInt(evt.path[1].classList.item(1), 10)].classList.remove('hidden');
+    addHandlerToAdvertCard(document.querySelectorAll('article.map__card')[parseInt(evt.path[1].classList.item(1), 10)]);
+  } else {
+    document.querySelectorAll('article.map__card')[parseInt(evt.target.classList.item(1), 10)].classList.remove('hidden');
+    addHandlerToAdvertCard(document.querySelectorAll('article.map__card')[parseInt(evt.target.classList.item(1), 10)]);
+  }
+};
+
+
+/**
  * Функция добавляющая два обработчика события на кнопку закрытия карточки объявления
- * (по нажатии кнопки Enter и клике на кнопку хакрытия)
+ * (по нажатии кнопки Enter и клике на кнопку закрытия)
  * @param {object} advertCard обьет карточки объявления, к которой добавляем обрабочик
  */
 var addHandlerToAdvertCard = function (advertCard) {
   advertCard.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
       advertCard.classList.add('hidden');
+      advertCard.removeEventListener('keydown', buttonClickHandler);
     }
   });
 
   advertCard.querySelector('button.popup__close').addEventListener('click', function () {
     advertCard.classList.add('hidden');
+    advertCard.removeEventListener('click', buttonClickHandler);
   });
 };
+
+/**
+ * Функция-обработчик события, после клика по кнопке отправляет данные с формы на сервер
+ */
+var submitButtonClickHandler = function () {
+  document.querySelector('form.notice__form').submit();
+};
+
+var formSubmit = document.querySelector('button.form__submit');
+formSubmit.addEventListener('click', submitButtonClickHandler);
