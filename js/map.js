@@ -427,7 +427,7 @@ timeOut.addEventListener('click', timeOutClickHandler);
 
 /**
  * функция делает невозможным выбор в "Количество мест" несовпадающих значений с "Кол-во комнат"
- * @return {boolean} в случае если выбран пункт в "Кол-во комнат" совпадающий с "Количество мест" - возвращает true
+ * @return {boolean} в случае если выбрано значение в "Кол-во комнат" совпадающий с "Количество мест" - возвращает true
  */
 var synchronizeRoomsAndContents = function () {
   var roomNumbers = {
