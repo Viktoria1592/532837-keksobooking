@@ -175,29 +175,43 @@ var templateOfLabel = document.querySelector('template').content.querySelector('
  * Функция заполняющая положение метки на карте
  * и изображение аватара пользователя в ней
  * @param   {object} advert            объект с данными об объявлении
- * @param   {number} uniqueClassNumber уникальное число объекта, передается в класс
+ * @param   {number} uniqueIDNumber уникальное число объекта, передается в класс
  * @return  {Node}                     DOM-элемент метки
  */
-var renderAdvertLabel = function (advert, uniqueClassNumber) {
+var renderAdvertLabel = function (advert, uniqueIDNumber) {
   var newAdvert = templateOfLabel.cloneNode(true);
   newAdvert.style.left = advert.location.x + 'px';
   newAdvert.style.top = advert.location.y + 'px';
   newAdvert.querySelector('img').src = advert.author.avatar;
-  newAdvert.classList.add(uniqueClassNumber);
+  // newAdvert.classList.add(uniqueIDNumber);
+  newAdvert.dataset.id = uniqueIDNumber;
   return newAdvert;
 };
 
 /**
- * Функция добавляет готовые карточки объявлений в DocumentFragment
+ * Функция добавляет готовые метки объявлений в DocumentFragment
  * @param  {array}    advertsArray     массив с объектами объявлений
  * @param  {function} renderFunction   функция заполняющая шаблон данными из advertsArray
- * @return {Node}                      DOM элемент с объявлениями
+ * @return {Node}                      DOM элемент с метками
  */
 var fragmentFilling = function (advertsArray, renderFunction) {
   var fragment = document.createDocumentFragment();
   for (var k = 0; k < advertsArray.length; k++) {
     fragment.appendChild(renderFunction(advertsArray[k], k));
   }
+  return fragment;
+};
+
+/**
+ * добавляет готовую карточку объявления в DocumentFragment
+ * @param   {array}    advertsArray   массив с объектами объявлений
+ * @param   {function} renderFunction функция заполняющая шаблон данными из advertsArray
+ * @param   {number}    elementId     ID карточки
+ * @return {Node}                    DOM элемент с карточкой
+ */
+var addCardToMap = function (advertsArray, renderFunction, elementId) {
+  var fragment = document.createDocumentFragment();
+  fragment.appendChild(renderFunction(advertsArray[elementId], elementId));
   return fragment;
 };
 
@@ -212,10 +226,10 @@ var cardTemplate = document.querySelector('template').content.querySelector('art
 /**
  * Функция заполняющая шаблон карточки объявления деталями
  * @param  {object} advert            объект с данными об объявлении
- * @param  {number} uniqueClassNumber уникальное число объекта, передается в класс
+ * @param  {number} uniqueIDNumber уникальное число объекта, передается в класс
  * @return {Node}                     DOM-элемент объявления
  */
-var renderAdvertCard = function (advert, uniqueClassNumber) {
+var renderAdvertCard = function (advert, uniqueIDNumber) {
   var newCard = cardTemplate.cloneNode(true);
   newCard.querySelector('h3').textContent = advert.offer.title;
   newCard.querySelector('p small').textContent = advert.location.x + (MAP_PIN_FULL_WIDTH / 2) + ', ' + (advert.location.y + MAP_PIN_FULL_HEIGHT) + '';
@@ -227,8 +241,9 @@ var renderAdvertCard = function (advert, uniqueClassNumber) {
   newCard.querySelector('ul.popup__features + p').textContent = advert.offer.description;
   addingAdvertImages(advert, newCard);
   newCard.querySelector('img.popup__avatar').src = advert.author.avatar;
-  newCard.classList.add(uniqueClassNumber);
-  newCard.classList.add('hidden');
+  // newCard.classList.add(uniqueIDNumber);
+  newCard.dataset.id = uniqueIDNumber;
+
   newCard.querySelector('button.popup__close').tabIndex = 0;
 
   return newCard;
@@ -279,7 +294,8 @@ var makePageActive = function () {
   document.querySelector('.map').classList.remove('map--faded');
   var mapPins = document.querySelector('.map__pins');
   mapPins.appendChild(fragmentFilling(adverts, renderAdvertLabel));
-  mapPopup.insertBefore(fragmentFilling(adverts, renderAdvertCard), referenceElement);
+  var flatTypeInput = document.querySelector('#type');
+  flatTypeInput.addEventListener('click', flatTypeSelectClickHandler);
 };
 
 returnPageToInitialState();
@@ -292,6 +308,7 @@ var mapPinMain = document.querySelector('.map__pin--main');
 var mainPinClickHandler = function () {
   makePageActive();
   findMainPinAdress();
+  roomNumberSelectClickHandler();
 
   var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
   for (var p = 0; p < similarAdvertPins.length; p++) {
@@ -317,21 +334,26 @@ var addHandlerPin = function (advertPin) {
  * @param {object} evt объект event
  */
 var buttonClickHandler = function (evt) {
-  var advertCards = document.querySelectorAll('article.map__card');
-  for (var r = 0; r < advertCards.length; r++) {
-    if (advertCards[r].classList[3] !== 'hidden') {
-      advertCards[r].classList.add('hidden');
-    }
-  }
+  closeOpenedCards();
+  var evtImgClick = evt.path[1].dataset.id;
+  var evtBorderClick = evt.path[0].dataset.id;
   if (evt.path[0].tagName === 'IMG') {
-    document.querySelectorAll('article.map__card')[parseInt(evt.path[1].classList.item(1), 10)].classList.remove('hidden');
-    addHandlerToAdvertCard(document.querySelectorAll('article.map__card')[parseInt(evt.path[1].classList.item(1), 10)]);
+    mapPopup.insertBefore(addCardToMap(adverts, renderAdvertCard, evtImgClick), referenceElement);
+    addHandlerToAdvertCard(document.querySelector('article.map__card'));
   } else {
-    document.querySelectorAll('article.map__card')[parseInt(evt.target.classList.item(1), 10)].classList.remove('hidden');
-    addHandlerToAdvertCard(document.querySelectorAll('article.map__card')[parseInt(evt.target.classList.item(1), 10)]);
+    mapPopup.insertBefore(addCardToMap(adverts, renderAdvertCard, evtBorderClick), referenceElement);
+    addHandlerToAdvertCard(document.querySelector('article.map__card'));
   }
 };
 
+/**
+ * Функция удаляющая карточку объявления с карты
+ */
+var closeOpenedCards = function () {
+  if (mapPopup.contains(document.querySelector('article.map__card'))) {
+    mapPopup.removeChild(document.querySelector('article.map__card'));
+  }
+};
 
 /**
  * Функция добавляющая два обработчика события на кнопку закрытия карточки объявления
@@ -353,11 +375,120 @@ var addHandlerToAdvertCard = function (advertCard) {
 };
 
 /**
- * Функция-обработчик события, после клика по кнопке отправляет данные с формы на сервер
+ * Функция-обработчик события, меняет минимальную
+ * допустимую стоимость жилья в атрибуте 'Цена за ночь, руб.'
+ * в зависимости от выбраного типа жилья
  */
-var submitButtonClickHandler = function () {
-  document.querySelector('form.notice__form').submit();
+var flatTypeSelectClickHandler = function () {
+  var flatTypesObjects = document.querySelectorAll('#type option');
+  var faltTypes = {
+    'flat': '0',
+    'bungalo': '1000',
+    'house': '5000',
+    'palace': '10000'
+  };
+
+  var priceForFlat = document.querySelector('#price');
+  for (var s = 0; s < flatTypesObjects.length; s++) {
+    if (flatTypesObjects[s].selected) {
+      priceForFlat.min = faltTypes[flatTypesObjects[s].value];
+    }
+  }
 };
 
-var formSubmit = document.querySelector('button.form__submit');
-formSubmit.addEventListener('click', submitButtonClickHandler);
+var timeIn = document.querySelector('#timein');
+var timeOut = document.querySelector('#timeout');
+var timeInOptions = document.querySelectorAll('#timein option');
+var timeOutOptions = document.querySelectorAll('#timeout option');
+
+/**
+ * Функция синхронизирующая время заезда\выезда
+ * (при изменении значения одного поля, во втором выделяется соответствующее ему)
+ * @param {array} weSelectOptionsArray              массив DOM-объектов с которым будет синхронизирован следующий
+ * @param {array} automaticallyChangedOptionsArray  массив DOM-объектов который будет синхронизирован
+ */
+var changeTime = function (weSelectOptionsArray, automaticallyChangedOptionsArray) {
+  for (var t = 0; t < weSelectOptionsArray.length; t++) {
+    if (weSelectOptionsArray[t].selected) {
+      automaticallyChangedOptionsArray[t].selected = true;
+    }
+  }
+};
+
+var timeInClickHandler = function () {
+  changeTime(timeInOptions, timeOutOptions);
+};
+
+var timeOutClickHandler = function () {
+  changeTime(timeOutOptions, timeInOptions);
+};
+timeIn.addEventListener('click', timeInClickHandler);
+timeOut.addEventListener('click', timeOutClickHandler);
+
+/**
+ * функция делает невозможным выбор в "Количество мест" несовпадающих значений с "Кол-во комнат"
+ * @return {boolean} в случае если выбран пункт в "Кол-во комнат" совпадающий с "Количество мест" - возвращает true
+ */
+var synchronizeRoomsAndContents = function () {
+  var roomNumbers = {
+    '1': '1',
+    '2': ['1', '2'],
+    '3': ['1', '2', '3'],
+    '100': '0'
+  };
+
+  var capacityObjects = document.querySelectorAll('#capacity option');
+  var capacity = document.querySelector('#capacity');
+  var correctValue = false;
+  for (var w = 0; w < capacityObjects.length; w++) {
+    capacityObjects[w].disabled = true;
+  }
+
+  if (roomNumbers[roomNumberObject.value].length > 1) {
+    for (var u = 0; u < capacityObjects.length; u++) {
+      for (var v = 0; v < roomNumbers[roomNumberObject.value].length; v++) {
+        if (capacityObjects[u].value === roomNumbers[roomNumberObject.value][v]) {
+          capacityObjects[u].disabled = false;
+          if (capacityObjects[u].value === capacity.value) {
+            correctValue = true;
+          }
+        }
+      }
+    }
+  } else {
+    for (var x = 0; x < capacityObjects.length; x++) {
+      if (capacityObjects[x].value === roomNumbers[roomNumberObject.value]) {
+        capacityObjects[x].disabled = false;
+        if (capacityObjects[x].value === capacity.value) {
+          correctValue = true;
+        }
+      }
+    }
+  }
+  return correctValue;
+};
+var roomNumberObject = document.querySelector('#room_number');
+
+/**
+ * Обработчик события для синхронизации Кол-ва комнат и кол-ва мест
+ */
+var roomNumberSelectClickHandler = function () {
+  synchronizeRoomsAndContents();
+};
+
+roomNumberObject.addEventListener('click', roomNumberSelectClickHandler);
+
+var submitButton = document.querySelector('button.form__submit');
+
+/**
+ * Обработчик событий, по нажатии на кнопку Опубликовать - проверяет
+ * соответствует ли количество мест комнатам
+ */
+submitButton.addEventListener('click', function () {
+  var capacity = document.querySelector('#capacity');
+  if (!synchronizeRoomsAndContents()) {
+    capacity.setCustomValidity('Количетво гостей не совпадает с количеством комнат');
+  } else {
+    capacity.setCustomValidity('');
+  }
+});
