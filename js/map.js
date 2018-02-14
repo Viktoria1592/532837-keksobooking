@@ -427,53 +427,38 @@ timeOut.addEventListener('click', timeOutClickHandler);
 
 /**
  * функция делает невозможным выбор в "Количество мест" несовпадающих значений с "Кол-во комнат"
- * @return {boolean} в случае если выбрано значение в "Кол-во комнат" совпадающий с "Количество мест" - возвращает true
+ * @param  {number} activeValue  принимает значение выбраное в "Кол-во комнат"
+ * @return {boolean}             в случае если выбрано значение в "Кол-во комнат" совпадающий с "Количество мест" - возвращает true
  */
-var synchronizeRoomsAndContents = function () {
+var syncRoomsVsGuests = function (activeValue) {
   var roomNumbers = {
-    '1': '1',
+    '1': ['1'],
     '2': ['1', '2'],
     '3': ['1', '2', '3'],
-    '100': '0'
+    '100': ['0']
   };
 
   var capacityObjects = document.querySelectorAll('#capacity option');
+  var guestCount = roomNumbers[activeValue];
   var capacity = document.querySelector('#capacity');
   var correctValue = false;
-  for (var w = 0; w < capacityObjects.length; w++) {
-    capacityObjects[w].disabled = true;
-  }
 
-  if (roomNumbers[roomNumberObject.value].length > 1) {
-    for (var u = 0; u < capacityObjects.length; u++) {
-      for (var v = 0; v < roomNumbers[roomNumberObject.value].length; v++) {
-        if (capacityObjects[u].value === roomNumbers[roomNumberObject.value][v]) {
-          capacityObjects[u].disabled = false;
-          if (capacityObjects[u].value === capacity.value) {
-            correctValue = true;
-          }
-        }
-      }
-    }
-  } else {
-    for (var x = 0; x < capacityObjects.length; x++) {
-      if (capacityObjects[x].value === roomNumbers[roomNumberObject.value]) {
-        capacityObjects[x].disabled = false;
-        if (capacityObjects[x].value === capacity.value) {
-          correctValue = true;
-        }
-      }
+  for (var u = 0; u < capacityObjects.length; u++) {
+    capacityObjects[u].disabled = !guestCount.includes(capacityObjects[u].value);
+    if (capacityObjects[u].value === capacity.value && !capacityObjects[u].disabled) {
+      correctValue = true;
     }
   }
   return correctValue;
 };
+
 var roomNumberObject = document.querySelector('#room_number');
 
 /**
  * Обработчик события для синхронизации Кол-ва комнат и кол-ва мест
  */
 var roomNumberSelectClickHandler = function () {
-  synchronizeRoomsAndContents();
+  syncRoomsVsGuests(roomNumberObject.value);
 };
 
 roomNumberObject.addEventListener('click', roomNumberSelectClickHandler);
@@ -486,7 +471,8 @@ var submitButton = document.querySelector('button.form__submit');
  */
 submitButton.addEventListener('click', function () {
   var capacity = document.querySelector('#capacity');
-  if (!synchronizeRoomsAndContents()) {
+  var roomObject = document.querySelector('#room_number');
+  if (!syncRoomsVsGuests(roomObject.value)) {
     capacity.setCustomValidity('Количетво гостей не совпадает с количеством комнат');
   } else {
     capacity.setCustomValidity('');
