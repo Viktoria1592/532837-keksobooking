@@ -85,7 +85,5 @@ window.card = (function () {
 
       return newCard;
     }
-
-};
-
+  };
 })();
