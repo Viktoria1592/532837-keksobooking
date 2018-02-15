@@ -8,6 +8,10 @@
   var timeOut = document.querySelector('#timeout');
   var timeInOptions = document.querySelectorAll('#timein option');
   var timeOutOptions = document.querySelectorAll('#timeout option');
+  var capacity = document.querySelector('#capacity');
+  var roomSelector = document.querySelector('#room_number');
+  var mapPinMain = document.querySelector('button.map__pin--main');
+  var capacitySelectorOptions = document.querySelectorAll('#capacity option');
 
   /**
    * Функция синхронизирующая время заезда\выезда
@@ -46,30 +50,26 @@
       '100': ['0']
     };
 
-    var capacityObjects = document.querySelectorAll('#capacity option');
     var guestCount = roomNumbers[activeValue];
-    var capacity = document.querySelector('#capacity');
     var correctValue = false;
 
-    for (var u = 0; u < capacityObjects.length; u++) {
-      capacityObjects[u].disabled = !guestCount.includes(capacityObjects[u].value);
-      if (capacityObjects[u].value === capacity.value && !capacityObjects[u].disabled) {
+    for (var u = 0; u < capacitySelectorOptions.length; u++) {
+      capacitySelectorOptions[u].disabled = !guestCount.includes(capacitySelectorOptions[u].value);
+      if (capacitySelectorOptions[u].value === capacity.value && !capacitySelectorOptions[u].disabled) {
         correctValue = true;
       }
     }
     return correctValue;
   };
 
-  var roomNumberObject = document.querySelector('#room_number');
-
   /**
    * Обработчик события для синхронизации Кол-ва комнат и кол-ва мест
    */
   var roomNumberSelectClickHandler = function () {
-    syncRoomsVsGuests(roomNumberObject.value);
+    syncRoomsVsGuests(roomSelector.value);
   };
 
-  roomNumberObject.addEventListener('click', roomNumberSelectClickHandler);
+  roomSelector.addEventListener('click', roomNumberSelectClickHandler);
 
   var submitButton = document.querySelector('button.form__submit');
 
@@ -78,9 +78,7 @@
    * соответствует ли количество мест комнатам
    */
   submitButton.addEventListener('click', function () {
-    var capacity = document.querySelector('#capacity');
-    var roomObject = document.querySelector('#room_number');
-    if (!syncRoomsVsGuests(roomObject.value)) {
+    if (!syncRoomsVsGuests(roomSelector.value)) {
       capacity.setCustomValidity('Количетво гостей не совпадает с количеством комнат');
     } else {
       capacity.setCustomValidity('');
@@ -113,7 +111,6 @@
    * Функция которая устанавливает значение в поле ввода адреса
    */
   var findMainPinAdress = function () {
-    var mapPinMain = document.querySelector('button.map__pin--main');
     document.querySelector('#address').value = '' + (mapPinMain.offsetTop + MAIN_MAP_PIN_FULL_HEIGHT) + ', ' + (mapPinMain.offsetLeft + (MAIN_MAP_PIN_FULL_WIDTH / 2)) + '';
   };
 
