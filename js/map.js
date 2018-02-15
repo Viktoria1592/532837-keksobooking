@@ -128,10 +128,10 @@
     var evtImgClick = evt.path[1].dataset.id;
     var evtBorderClick = evt.path[0].dataset.id;
     if (evt.path[0].tagName === 'IMG') {
-      mapPopup.insertBefore(window.card.addCardToMap(window.data.adverts, window.card.renderAdvertCard, evtImgClick), referenceElement);
+      mapPopup.insertBefore(window.card.addToMap(window.data.adverts, window.card.renderAdvert, evtImgClick), referenceElement);
       addHandlerToAdvertCard(document.querySelector('article.map__card'));
     } else {
-      mapPopup.insertBefore(window.card.addCardToMap(window.data.adverts, window.card.renderAdvertCard, evtBorderClick), referenceElement);
+      mapPopup.insertBefore(window.card.addToMap(window.data.adverts, window.card.renderAdvert, evtBorderClick), referenceElement);
       addHandlerToAdvertCard(document.querySelector('article.map__card'));
     }
   };

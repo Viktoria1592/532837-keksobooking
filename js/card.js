@@ -86,7 +86,7 @@
   };
 
   window.card = {
-    renderAdvertCard: renderAdvertCard,
-    addCardToMap: addCardToMap
+    renderAdvert: renderAdvertCard,
+    addToMap: addCardToMap
   };
 })();
