@@ -14,8 +14,8 @@ window.data = (function () {
   var MAX_GUESTS_QUANTITY = 5;
   var typesOfFlat = ['flat', 'house', 'bungalo'];
   var features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var checkinTimes = ['12:00', '13:00', '14:00'];
-  var checkoutTimes = ['12:00', '13:00', '14:00'];
+  var checkInTimes = ['12:00', '13:00', '14:00'];
+  var checkOutTimes = ['12:00', '13:00', '14:00'];
   var images = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
   var ADVERTS_COUNT = 8;
 
@@ -42,8 +42,8 @@ window.data = (function () {
         'type': window.util.generateRandomArrayValue(typesOfFlat),
         'rooms': window.util.generateRandomNumber(MIN_ROOM_QUANTITY, MAX_ROOM_QUANTITY),
         'guests': window.util.generateRandomNumber(MIN_GUESTS_QUANTITY, MAX_GUESTS_QUANTITY),
-        'checkin': window.util.generateRandomArrayValue(checkinTimes),
-        'checkout': window.util.generateRandomArrayValue(checkoutTimes),
+        'checkin': window.util.generateRandomArrayValue(checkInTimes),
+        'checkout': window.util.generateRandomArrayValue(checkOutTimes),
         'features': window.util.generateArrayWithRandomLenght(features),
         'description': '',
         'photos': window.util.shuffleArray(images)

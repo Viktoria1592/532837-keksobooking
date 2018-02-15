@@ -115,7 +115,7 @@ window.form = (function () {
      */
     findMainPinAdress: function () {
       var mapPinMain = document.querySelector('button.map__pin--main');
-      document.querySelector('#address').value = '' + (mapPinMain.offsetTop + (MAIN_MAP_PIN_FULL_HEIGHT / 2)) + ', ' + (mapPinMain.offsetLeft + (MAIN_MAP_PIN_FULL_WIDTH / 2)) + '';
+      document.querySelector('#address').value = '' + (mapPinMain.offsetTop + MAIN_MAP_PIN_FULL_HEIGHT) + ', ' + (mapPinMain.offsetLeft + (MAIN_MAP_PIN_FULL_WIDTH / 2)) + '';
     },
 
     roomNumberSelectClickHandler: roomNumberSelectClickHandler

@@ -16,7 +16,6 @@ window.pin = (function () {
       newAdvert.style.left = advert.location.x + 'px';
       newAdvert.style.top = advert.location.y + 'px';
       newAdvert.querySelector('img').src = advert.author.avatar;
-      // newAdvert.classList.add(uniqueIDNumber);
       newAdvert.dataset.id = uniqueIDNumber;
       return newAdvert;
     },
