@@ -1,6 +1,6 @@
 'use strict';
 
-window.card = (function () {
+(function () {
   var cardTemplate = document.querySelector('template').content.querySelector('article.map__card');
   var FLAT_IMAGES_HEIGHT = 70;
   var FLAT_IMAGES_WIDTH = 70;
@@ -48,7 +48,6 @@ window.card = (function () {
     'house': 'Дом'
   };
 
-  return {
     /**
      * добавляет готовую карточку объявления в DocumentFragment
      * @param   {array}    advertsArray   массив с объектами объявлений
@@ -56,11 +55,11 @@ window.card = (function () {
      * @param   {number}    elementId     ID карточки
      * @return {Node}                    DOM элемент с карточкой
      */
-    addCardToMap: function (advertsArray, renderFunction, elementId) {
-      var fragment = document.createDocumentFragment();
-      fragment.appendChild(renderFunction(advertsArray[elementId], elementId));
-      return fragment;
-    },
+  var addCardToMap = function (advertsArray, renderFunction, elementId) {
+    var fragment = document.createDocumentFragment();
+    fragment.appendChild(renderFunction(advertsArray[elementId], elementId));
+    return fragment;
+  };
 
     /**
      * Функция заполняющая шаблон карточки объявления деталями
@@ -68,22 +67,26 @@ window.card = (function () {
      * @param  {number} uniqueIDNumber уникальное число объекта, передается в класс
      * @return {Node}                     DOM-элемент объявления
      */
-    renderAdvertCard: function (advert, uniqueIDNumber) {
-      var newCard = cardTemplate.cloneNode(true);
-      newCard.querySelector('h3').textContent = advert.offer.title;
-      newCard.querySelector('p small').textContent = advert.location.x + (MAP_PIN_FULL_WIDTH / 2) + ', ' + (advert.location.y + MAP_PIN_FULL_HEIGHT) + '';
-      newCard.querySelector('.popup__price').textContent = advert.offer.price + ' \u20BD/ночь';
-      newCard.querySelector('h4').textContent = typeLabels[advert.offer.type];
-      newCard.querySelector('h4 + p').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
-      newCard.querySelector('h4 + p + p').textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
-      addingAdvertFeatures(advert, newCard);
-      newCard.querySelector('ul.popup__features + p').textContent = advert.offer.description;
-      addingAdvertImages(advert, newCard);
-      newCard.querySelector('img.popup__avatar').src = advert.author.avatar;
-      newCard.dataset.id = uniqueIDNumber;
-      newCard.querySelector('button.popup__close').tabIndex = 0;
+  var renderAdvertCard = function (advert, uniqueIDNumber) {
+    var newCard = cardTemplate.cloneNode(true);
+    newCard.querySelector('h3').textContent = advert.offer.title;
+    newCard.querySelector('p small').textContent = advert.location.x + (MAP_PIN_FULL_WIDTH / 2) + ', ' + (advert.location.y + MAP_PIN_FULL_HEIGHT) + '';
+    newCard.querySelector('.popup__price').textContent = advert.offer.price + ' \u20BD/ночь';
+    newCard.querySelector('h4').textContent = typeLabels[advert.offer.type];
+    newCard.querySelector('h4 + p').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
+    newCard.querySelector('h4 + p + p').textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
+    addingAdvertFeatures(advert, newCard);
+    newCard.querySelector('ul.popup__features + p').textContent = advert.offer.description;
+    addingAdvertImages(advert, newCard);
+    newCard.querySelector('img.popup__avatar').src = advert.author.avatar;
+    newCard.dataset.id = uniqueIDNumber;
+    newCard.querySelector('button.popup__close').tabIndex = 0;
 
-      return newCard;
-    }
+    return newCard;
+  };
+
+  window.card = {
+    renderAdvertCard: renderAdvertCard,
+    addCardToMap: addCardToMap
   };
 })();

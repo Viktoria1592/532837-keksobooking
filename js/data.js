@@ -1,6 +1,6 @@
 'use strict';
 
-window.data = (function () {
+(function () {
   var LEFT_X_BORDER = 300;
   var RIGHT_X_BORDER = 900;
   var TOP_Y_BORDER = 150;
@@ -62,7 +62,7 @@ window.data = (function () {
     adverts[i] = generateAdvertObject(i);
   }
 
-  return {
+  window.data = {
     adverts: adverts
   };
 })();

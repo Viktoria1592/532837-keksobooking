@@ -85,16 +85,14 @@
       } else if ((mapPinMain.offsetTop - shift.y) > BOTTOM_Y_BORDER) {
         mapPinMain.style.top = BOTTOM_Y_BORDER + 'px';
       } else {
-         mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+        mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
       }
-      console.log(LEFT_X_BORDER);
-      console.log(mapPinMain.offsetLeft);
       if ((mapPinMain.offsetLeft - shift.x) < LEFT_X_BORDER) {
         mapPinMain.style.left = LEFT_X_BORDER + 'px';
       } else if ((mapPinMain.offsetLeft - shift.x) > RIGHT_X_BORDER) {
         mapPinMain.style.left = RIGHT_X_BORDER + 'px';
       } else {
-         mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+        mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
       }
       window.form.findMainPinAdress();
     };
