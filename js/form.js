@@ -1,6 +1,6 @@
 'use strict';
 
-window.form = (function () {
+(function () {
   var MAIN_MAP_PIN_FULL_HEIGHT = 82;
   var MAIN_MAP_PIN_FULL_WIDTH = 62;
 
@@ -87,37 +87,39 @@ window.form = (function () {
     }
   });
 
-  return {
-    /**
-     * Функция-обработчик события, меняет минимальную
-     * допустимую стоимость жилья в атрибуте 'Цена за ночь, руб.'
-     * в зависимости от выбраного типа жилья
-     */
-    flatTypeSelectClickHandler: function () {
-      var flatTypesObjects = document.querySelectorAll('#type option');
-      var faltTypes = {
-        'flat': '0',
-        'bungalo': '1000',
-        'house': '5000',
-        'palace': '10000'
-      };
+  /**
+   * Функция-обработчик события, меняет минимальную
+   * допустимую стоимость жилья в атрибуте 'Цена за ночь, руб.'
+   * в зависимости от выбраного типа жилья
+   */
+  var flatTypeSelectClickHandler = function () {
+    var flatTypesObjects = document.querySelectorAll('#type option');
+    var faltTypes = {
+      'flat': '0',
+      'bungalo': '1000',
+      'house': '5000',
+      'palace': '10000'
+    };
 
-      var priceForFlat = document.querySelector('#price');
-      for (var s = 0; s < flatTypesObjects.length; s++) {
-        if (flatTypesObjects[s].selected) {
-          priceForFlat.min = faltTypes[flatTypesObjects[s].value];
-        }
+    var priceForFlat = document.querySelector('#price');
+    for (var s = 0; s < flatTypesObjects.length; s++) {
+      if (flatTypesObjects[s].selected) {
+        priceForFlat.min = faltTypes[flatTypesObjects[s].value];
       }
-    },
+    }
+  };
 
-    /**
-     * Функция которая устанавливает значение в поле ввода адреса
-     */
-    findMainPinAdress: function () {
-      var mapPinMain = document.querySelector('button.map__pin--main');
-      document.querySelector('#address').value = '' + (mapPinMain.offsetTop + (MAIN_MAP_PIN_FULL_HEIGHT / 2)) + ', ' + (mapPinMain.offsetLeft + (MAIN_MAP_PIN_FULL_WIDTH / 2)) + '';
-    },
+  /**
+   * Функция которая устанавливает значение в поле ввода адреса
+   */
+  var findMainPinAdress = function () {
+    var mapPinMain = document.querySelector('button.map__pin--main');
+    document.querySelector('#address').value = '' + (mapPinMain.offsetTop + MAIN_MAP_PIN_FULL_HEIGHT) + ', ' + (mapPinMain.offsetLeft + (MAIN_MAP_PIN_FULL_WIDTH / 2)) + '';
+  };
 
-    roomNumberSelectClickHandler: roomNumberSelectClickHandler
+  window.form = {
+    roomNumberSelectClickHandler: roomNumberSelectClickHandler,
+    findMainPinAdress: findMainPinAdress,
+    flatTypeSelectClickHandler: flatTypeSelectClickHandler
   };
 })();
