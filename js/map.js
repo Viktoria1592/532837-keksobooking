@@ -1,6 +1,5 @@
 'use strict';
 
-
 (function () {
   var mapPopup = document.querySelector('section.map');
   var TOP_Y_BORDER = 150;
