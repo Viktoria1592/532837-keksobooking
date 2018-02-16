@@ -1,6 +1,5 @@
 'use strict';
 
-
 (function () {
   var mapPopup = document.querySelector('section.map');
   var TOP_Y_BORDER = 150;
@@ -13,7 +12,7 @@
   var noticeFormFieldsets = noticeForm.querySelectorAll('fieldset');
   var map = document.querySelector('.map');
   var mapPinMain = document.querySelector('.map__pin--main');
-
+  var mapCard = document.querySelector('article.map__card');
 
   /**
    * Функция возвращает страницу в её начальное состояние
@@ -45,6 +44,7 @@
 
     map.classList.remove('map--faded');
     var mapPins = document.querySelector('.map__pins');
+    console.log(window.data.adverts);
     mapPins.appendChild(window.pin.fragmentFilling(window.data.adverts, window.pin.renderAdvertLabel));
     var flatTypeInput = document.querySelector('#type');
     flatTypeInput.addEventListener('click', window.form.flatTypeSelectClickHandler);
@@ -129,10 +129,10 @@
     var evtBorderClick = evt.path[0].dataset.id;
     if (evt.path[0].tagName === 'IMG') {
       mapPopup.insertBefore(window.card.addToMap(window.data.adverts, window.card.renderAdvert, evtImgClick), referenceElement);
-      addHandlerToAdvertCard(document.querySelector('article.map__card'));
+      addHandlerToAdvertCard(mapCard);
     } else {
       mapPopup.insertBefore(window.card.addToMap(window.data.adverts, window.card.renderAdvert, evtBorderClick), referenceElement);
-      addHandlerToAdvertCard(document.querySelector('article.map__card'));
+      addHandlerToAdvertCard(mapCard);
     }
   };
 
@@ -140,8 +140,8 @@
    * Функция удаляющая карточку объявления с карты
    */
   var closeOpenedCards = function () {
-    if (mapPopup.contains(document.querySelector('article.map__card'))) {
-      mapPopup.removeChild(document.querySelector('article.map__card'));
+    if (mapPopup.contains(mapCard)) {
+      mapPopup.removeChild(mapCard);
     }
   };
 
