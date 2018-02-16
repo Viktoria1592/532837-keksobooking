@@ -9,21 +9,24 @@
   var RIGHT_X_BORDER = mapPopup.offsetWidth;
   var ENTER_KEYCODE = 13;
   var referenceElement = document.querySelector('div.map__filters-container');
+  var noticeForm = document.querySelector('.notice__form');
+  var noticeFormFieldsets = noticeForm.querySelectorAll('fieldset');
+  var map = document.querySelector('.map');
+  var mapPinMain = document.querySelector('.map__pin--main');
+
+
   /**
    * Функция возвращает страницу в её начальное состояние
    * (неактивны поля форм и заблокирована карта)
    */
   var blocksThePage = function () {
-    var noticeForm = document.querySelector('.notice__form');
     noticeForm.classList.add('notice__form--disabled');
-    var noticeFormFieldsets = (noticeForm.querySelectorAll('fieldset'));
 
     for (var n = 0; n < noticeFormFieldsets.length; n++) {
       noticeFormFieldsets[n].disabled = true;
     }
 
-    document.querySelector('.map').classList.add('map--faded');
-    var mapPinMain = document.querySelector('button.map__pin--main');
+    map.classList.add('map--faded');
     document.querySelector('#address').value = '' + (mapPinMain.offsetTop + (mapPinMain.offsetHeight / 2)) + ', ' + (mapPinMain.offsetLeft + (mapPinMain.offsetWidth / 2)) + '';
   };
 
@@ -34,15 +37,13 @@
    * (активны поля форм и карта)
    */
   var makePageActive = function () {
-    var noticeForm = document.querySelector('.notice__form');
     noticeForm.classList.remove('notice__form--disabled');
-    var noticeFormFieldsets = (noticeForm.querySelectorAll('fieldset'));
 
     for (var n = 0; n < noticeFormFieldsets.length; n++) {
       noticeFormFieldsets[n].disabled = false;
     }
 
-    document.querySelector('.map').classList.remove('map--faded');
+    map.classList.remove('map--faded');
     var mapPins = document.querySelector('.map__pins');
     mapPins.appendChild(window.pin.fragmentFilling(window.data.adverts, window.pin.renderAdvertLabel));
     var flatTypeInput = document.querySelector('#type');
@@ -67,7 +68,7 @@
     };
 
     var mainPinMouseMoveHandler = function (moveEvt) {
-      if (document.querySelector('.notice__form').classList.contains('notice__form--disabled')) {
+      if (noticeForm.classList.contains('notice__form--disabled')) {
         makePageActive();
       }
       var shift = {
@@ -106,7 +107,6 @@
     document.addEventListener('mouseup', mainPinMouseUpHandler);
   };
 
-  var mapPinMain = document.querySelector('.map__pin--main');
   mapPinMain.addEventListener('mousedown', mainPinMouseDownHandler);
 
   /**

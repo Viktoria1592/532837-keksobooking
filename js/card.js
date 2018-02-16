@@ -1,11 +1,11 @@
 'use strict';
 
 (function () {
-  var cardTemplate = document.querySelector('template').content.querySelector('article.map__card');
   var FLAT_IMAGES_HEIGHT = 70;
   var FLAT_IMAGES_WIDTH = 70;
   var MAP_PIN_FULL_HEIGHT = 70;
   var MAP_PIN_FULL_WIDTH = 50;
+  var cardTemplate = document.querySelector('template').content.querySelector('article.map__card');
 
   /**
    * Функция заполняющая особенности жилья в карточку обьявления
