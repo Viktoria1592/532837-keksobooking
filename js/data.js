@@ -19,49 +19,52 @@
   var images = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
   var ADVERTS_COUNT = 8;
 
-  /**
-   * Функция генерации объекта с данными о объявлении
-   * @param  {number} step номер изображения автора
-   * @return {object}      объект с данными объявления
-   */
-  var generateAdvertObject = function (step) {
-    var location = {
-      'x': window.util.generateRandomNumber(LEFT_X_BORDER, RIGHT_X_BORDER),
-      'y': window.util.generateRandomNumber(TOP_Y_BORDER, BOTTOM_Y_BORDER)
-    };
-
-    var newAdvertObject = {
-      'author': {
-        'avatar': 'img/avatars/user0' + (step + 1) + '.png'
-      },
-
-      'offer': {
-        'title': window.util.generateRandomNonRepeatableArrayValue(headers),
-        'address': location.x + ', ' + location.y,
-        'price': window.util.generateRandomNumber(MIN_FLAT_PRISE, MAX_FLAT_PRISE),
-        'type': window.util.generateRandomArrayValue(typesOfFlat),
-        'rooms': window.util.generateRandomNumber(MIN_ROOM_QUANTITY, MAX_ROOM_QUANTITY),
-        'guests': window.util.generateRandomNumber(MIN_GUESTS_QUANTITY, MAX_GUESTS_QUANTITY),
-        'checkin': window.util.generateRandomArrayValue(checkInTimes),
-        'checkout': window.util.generateRandomArrayValue(checkOutTimes),
-        'features': window.util.generateArrayWithRandomLenght(features),
-        'description': '',
-        'photos': window.util.shuffleArray(images)
-      },
-
-      'location': {
-        'x': location.x,
-        'y': location.y
-      }
-    };
-    return newAdvertObject;
-  };
-
-  var adverts = [];
-  for (var i = 0; i < ADVERTS_COUNT; i++) {
-    adverts[i] = generateAdvertObject(i);
-  }
-
+  // /**
+  //  * Функция генерации объекта с данными о объявлении
+  //  * @param  {number} step номер изображения автора
+  //  * @return {object}      объект с данными объявления
+  //  */
+  // var generateAdvertObject = function (step) {
+  //   var location = {
+  //     'x': window.util.generateRandomNumber(LEFT_X_BORDER, RIGHT_X_BORDER),
+  //     'y': window.util.generateRandomNumber(TOP_Y_BORDER, BOTTOM_Y_BORDER)
+  //   };
+  //
+  //   var newAdvertObject = {
+  //     'author': {
+  //       'avatar': 'img/avatars/user0' + (step + 1) + '.png'
+  //     },
+  //
+  //     'offer': {
+  //       'title': window.util.generateRandomNonRepeatableArrayValue(headers),
+  //       'address': location.x + ', ' + location.y,
+  //       'price': window.util.generateRandomNumber(MIN_FLAT_PRISE, MAX_FLAT_PRISE),
+  //       'type': window.util.generateRandomArrayValue(typesOfFlat),
+  //       'rooms': window.util.generateRandomNumber(MIN_ROOM_QUANTITY, MAX_ROOM_QUANTITY),
+  //       'guests': window.util.generateRandomNumber(MIN_GUESTS_QUANTITY, MAX_GUESTS_QUANTITY),
+  //       'checkin': window.util.generateRandomArrayValue(checkInTimes),
+  //       'checkout': window.util.generateRandomArrayValue(checkOutTimes),
+  //       'features': window.util.generateArrayWithRandomLenght(features),
+  //       'description': '',
+  //       'photos': window.util.shuffleArray(images)
+  //     },
+  //
+  //     'location': {
+  //       'x': location.x,
+  //       'y': location.y
+  //     }
+  //   };
+  //   return newAdvertObject;
+  // };
+  //
+  // var adverts = [];
+  // for (var i = 0; i < ADVERTS_COUNT; i++) {
+  //   adverts[i] = generateAdvertObject(i);
+  // }
+  var adverts;
+  window.backend.downloadAdverts(function (downloadedAdverts) {
+    adverts = downloadedAdverts;
+  });
   window.data = {
     adverts: adverts
   };
