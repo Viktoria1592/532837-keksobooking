@@ -3,7 +3,6 @@
 (function () {
   var MAIN_MAP_PIN_FULL_HEIGHT = 82;
   var MAIN_MAP_PIN_FULL_WIDTH = 62;
-
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
   var timeInOptions = document.querySelectorAll('#timein option');
@@ -12,6 +11,10 @@
   var roomSelector = document.querySelector('#room_number');
   var mapPinMain = document.querySelector('button.map__pin--main');
   var capacitySelectorOptions = document.querySelectorAll('#capacity option');
+  var submitButton = document.querySelector('button.form__submit');
+  var form = document.querySelector('form.notice__form');
+  var formReset = document.querySelector('.form__reset');
+
 
   /**
    * Функция синхронизирующая время заезда\выезда
@@ -71,8 +74,6 @@
 
   roomSelector.addEventListener('click', roomNumberSelectClickHandler);
 
-  var submitButton = document.querySelector('button.form__submit');
-
   /**
    * Обработчик событий, по нажатии на кнопку Опубликовать - проверяет
    * соответствует ли количество мест комнатам
@@ -114,9 +115,46 @@
     document.querySelector('#address').value = '' + (mapPinMain.offsetTop + MAIN_MAP_PIN_FULL_HEIGHT) + ', ' + (mapPinMain.offsetLeft + (MAIN_MAP_PIN_FULL_WIDTH / 2)) + '';
   };
 
+  var clearForm = function () {
+    var inputs = document.querySelectorAll('input:only-of-type');
+    console.log(inputs);
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i].value = '';
+    }
+  };
+
+  var addHandlersToFormButtons = function () {
+    form.addEventListener('submit', uploadButtonClickHandler);
+    formReset.addEventListener('click', resetButtonClickHandler);
+  };
+
+  var uploadButtonClickHandler = function (evt) {
+    window.backend.uploadFormData(new FormData(form), onSuccess);
+    evt.preventDefault();
+  };
+
+  var resetButtonClickHandler = function (evt) {
+    evt.preventDefault();
+    returnsPageToInitialState();
+  };
+
+  var onSuccess = function (status) {
+    if (status === 200) {
+      returnsPageToInitialState();
+    }
+  };
+
+  var returnsPageToInitialState = function () {
+    window.map.removeAdvertPins();
+    clearForm();
+    window.map.returnsMapInitialState();
+  };
+
+
   window.form = {
     roomNumberSelectClickHandler: roomNumberSelectClickHandler,
-    findMainPinAdress: findMainPinAdress,
-    flatTypeSelectClickHandler: flatTypeSelectClickHandler
+    findMainPinAddress: findMainPinAdress,
+    flatTypeSelectClickHandler: flatTypeSelectClickHandler,
+    upload: addHandlersToFormButtons
   };
 })();

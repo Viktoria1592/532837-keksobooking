@@ -17,7 +17,7 @@
    * Функция возвращает страницу в её начальное состояние
    * (неактивны поля форм и заблокирована карта)
    */
-  var blocksThePage = function () {
+  var returnsMapInitialState = function () {
     noticeForm.classList.add('notice__form--disabled');
 
     for (var n = 0; n < noticeFormFieldsets.length; n++) {
@@ -25,10 +25,12 @@
     }
 
     map.classList.add('map--faded');
+    mapPinMain.style.top = 375 + 'px';
+    mapPinMain.style.left = 50 + '%';
     document.querySelector('#address').value = '' + (mapPinMain.offsetTop + (mapPinMain.offsetHeight / 2)) + ', ' + (mapPinMain.offsetLeft + (mapPinMain.offsetWidth / 2)) + '';
   };
 
-  blocksThePage();
+  returnsMapInitialState();
 
   /**
    * Функция делает страницу активной для заполнения и просмотра
@@ -45,6 +47,14 @@
     var flatTypeInput = document.querySelector('#type');
     flatTypeInput.addEventListener('click', window.form.flatTypeSelectClickHandler);
     window.backend.downloadAdverts(onSuccess, window.util.onError);
+    window.form.upload();
+  };
+
+  var removeAdvertPins = function () {
+    var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
+    for (var i = 0; i < similarAdvertPins.length; i++) {
+      similarAdvertPins[i].remove();
+    }
   };
 
   /**
@@ -102,7 +112,7 @@
       } else {
         mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
       }
-      window.form.findMainPinAdress();
+      window.form.findMainPinAddress();
     };
 
     var mainPinMouseUpHandler = function () {
@@ -170,6 +180,11 @@
       advertCard.classList.add('hidden');
       advertCard.removeEventListener('click', buttonClickHandler);
     });
+  };
+
+  window.map = {
+    returnsMapInitialState: returnsMapInitialState,
+    removeAdvertPins: removeAdvertPins
   };
 
 })();

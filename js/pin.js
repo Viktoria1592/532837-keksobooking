@@ -26,7 +26,6 @@
    * @return {Node}                      DOM элемент с метками
    */
   var fragmentFilling = function (advertsArray, renderFunction) {
-    console.log(advertsArray);
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < advertsArray.length; i++) {
       fragment.appendChild(renderFunction(advertsArray[i], i));

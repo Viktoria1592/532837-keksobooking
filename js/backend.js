@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  /**
+   * Функция загрузки объявлений с червера сервера
+   * @param {function} onSuccess
+   * @param {function} onError
+   */
   var downloadAdverts = function (onSuccess, onError) {
     var URL = 'https://js.dump.academy/keksobooking/data';
     var xhr = new XMLHttpRequest();
@@ -25,7 +30,35 @@
     xhr.send();
   };
 
+  /**
+   * Функция загрузки данных с заполненной формы на север
+   * @param {node}     data       данные из формы
+   * @param {function} onSuccess
+   */
+  var uploadFormData = function (data, onSuccess) {
+    var URL = 'https://js.dump.acaemy/keksobooking';
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+
+    xhr.addEventListener('error', function () {
+      window.error.drawMessage('Произошла ошибка соединения');
+    });
+
+    xhr.addEventListener('timeout', function () {
+      window.error.drawMessage('Запрос не успел выполниться за ' + (xhr.timeout / 1000) + 'секунд');
+    });
+    xhr.addEventListener('load', function () {
+      onSuccess(xhr.status);
+    });
+
+    xhr.timeout = 10000;
+    xhr.open('POST', URL);
+    xhr.send(data);
+
+  };
+
   window.backend = {
-    downloadAdverts: downloadAdverts
+    downloadAdverts: downloadAdverts,
+    uploadFormData: uploadFormData
   };
 })();

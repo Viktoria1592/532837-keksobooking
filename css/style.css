@@ -429,8 +429,6 @@ textarea:focus
 .error__message
 {
     z-index: 100;
-    margin: 0 auto;
-    text-align: center;
     background-color: rgba(192,192,192,0.7);
     border-radius: 10px;
     position: absolute;
@@ -438,12 +436,18 @@ textarea:focus
     right: 0;
     bottom: 0;
     top: 0;
+    overflow: auto;
+
+    position: fixed;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .error__message div
 {
     z-index: 100;
-    margin: 0 auto;
     text-align: center;
     background-color: #FF5635;
     width: 300px;
@@ -452,7 +456,6 @@ textarea:focus
     box-shadow: 5px 5px 5px rgb(90,90,90);
     padding: 10px;
     position: relative;
-    top: 300px;
     fontSize: 30px;
 }
 
