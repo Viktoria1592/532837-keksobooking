@@ -3,7 +3,6 @@
 (function () {
   var ENTER_KEYCODE = 13;
 
-
   /**
    }
    * Функция генерирующая случайное значение
@@ -70,6 +69,10 @@
     return newArray;
   };
 
+  /**
+   * Функция выводящая сообщение об ошибке в зависимости от типа ошибки
+   * @param {number} errorCode
+   */
   var onError = function (errorCode) {
     switch (errorCode) {
       case 400:

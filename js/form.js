@@ -115,35 +115,57 @@
     document.querySelector('#address').value = '' + (mapPinMain.offsetTop + MAIN_MAP_PIN_FULL_HEIGHT) + ', ' + (mapPinMain.offsetLeft + (MAIN_MAP_PIN_FULL_WIDTH / 2)) + '';
   };
 
+  /**
+   * Функция очищающая форму от заполненых значений
+   */
   var clearForm = function () {
     var inputs = document.querySelectorAll('input:only-of-type');
-    console.log(inputs);
     for (var i = 0; i < inputs.length; i++) {
       inputs[i].value = '';
     }
   };
 
+  /**
+   * Функция добавляет обработчики событий к
+   * кнопке отправки данных и кнопке очистки страницы
+   */
   var addHandlersToFormButtons = function () {
     form.addEventListener('submit', uploadButtonClickHandler);
     formReset.addEventListener('click', resetButtonClickHandler);
   };
 
+  /**
+   * Функция-обработчик события, отправляет данные формы
+   * @param {event} evt
+   */
   var uploadButtonClickHandler = function (evt) {
     window.backend.uploadFormData(new FormData(form), onSuccess);
     evt.preventDefault();
   };
 
+  /**
+   * Функция-обработчик события, очищает страницу от заполненных данных
+   * @param {event} evt
+   */
   var resetButtonClickHandler = function (evt) {
     evt.preventDefault();
     returnsPageToInitialState();
   };
 
+  /**
+   * функция возвращает страницу в начальное состояние
+   * в случае успешной отправки данных на сервер
+   * @param {number} status
+   */
   var onSuccess = function (status) {
     if (status === 200) {
       returnsPageToInitialState();
     }
   };
 
+  /**
+   * функция возвращает страницу в начальное состояние
+   */
   var returnsPageToInitialState = function () {
     window.map.removeAdvertPins();
     clearForm();

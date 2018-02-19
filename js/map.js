@@ -50,6 +50,9 @@
     window.form.upload();
   };
 
+  /**
+   * функция удаляет пины объявлений с карты
+   */
   var removeAdvertPins = function () {
     var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
     for (var i = 0; i < similarAdvertPins.length; i++) {

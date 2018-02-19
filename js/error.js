@@ -1,15 +1,23 @@
 'use strict';
 
 (function () {
+  var errorMessageTemplate = document.querySelector('template').content.querySelector('article.error__message');
+
+  /**
+   * Функция добавляющая всплывающее сообщение об ошибке поверх страницы
+   * @param {string} errorMessage
+   */
   var drawMessage = function (errorMessage) {
-    var errorMessageDiv = document.querySelector('template').content.querySelector('article.error__message');
-    errorMessageDiv.querySelector('p').textContent = errorMessage;
+    errorMessageTemplate.querySelector('p').textContent = errorMessage;
     document.querySelector('body').style.position = 'relative';
-    document.body.insertAdjacentElement('afterbegin', errorMessageDiv);
-    var closeButton = errorMessageDiv.querySelector('button');
+    document.body.insertAdjacentElement('afterbegin', errorMessageTemplate);
+    var closeButton = document.querySelector('article.error__message div button');
+    var errorMessageDiv = document.querySelector('article.error__message');
 
     closeButton.addEventListener('click', function () {
-      errorMessageDiv.remove();
+      if (errorMessageDiv !== null) {
+        errorMessageDiv.remove();
+      }
     });
 
     closeButton.addEventListener('keydown', function (evt) {

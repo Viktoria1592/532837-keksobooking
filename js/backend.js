@@ -2,7 +2,7 @@
 
 (function () {
   /**
-   * Функция загрузки объявлений с червера сервера
+   * Функция загрузки объявлений с сервера
    * @param {function} onSuccess
    * @param {function} onError
    */
@@ -31,12 +31,12 @@
   };
 
   /**
-   * Функция загрузки данных с заполненной формы на север
+   * Функция загрузки данных с заполненной формы на сервер
    * @param {node}     data       данные из формы
    * @param {function} onSuccess
    */
   var uploadFormData = function (data, onSuccess) {
-    var URL = 'https://js.dump.acaemy/keksobooking';
+    var URL = 'https://js.dump.academy/keksobooking';
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
@@ -53,8 +53,11 @@
 
     xhr.timeout = 10000;
     xhr.open('POST', URL);
-    xhr.send(data);
-
+    try {
+      xhr.send(data);
+    } catch (err) {
+      console.log('!!!');
+    }
   };
 
   window.backend = {
