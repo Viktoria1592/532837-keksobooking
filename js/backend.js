@@ -48,6 +48,7 @@
     xhr.addEventListener('timeout', function () {
       window.error.drawMessage('Запрос не успел выполниться за ' + (xhr.timeout / 1000) + 'секунд');
     });
+
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
         onLoad();
