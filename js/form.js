@@ -1,8 +1,7 @@
 'use strict';
 
 (function () {
-  var MAIN_MAP_PIN_FULL_HEIGHT = 82;
-  var MAIN_MAP_PIN_FULL_WIDTH = 62;
+  var MAIN_MAP_PIN_FULL_HEIGHT = 87;
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
   var timeInOptions = document.querySelectorAll('#timein option');
@@ -111,8 +110,8 @@
   /**
    * Функция которая устанавливает значение в поле ввода адреса
    */
-  var findMainPinAdress = function () {
-    document.querySelector('#address').value = '' + (mapPinMain.offsetTop + MAIN_MAP_PIN_FULL_HEIGHT) + ', ' + (mapPinMain.offsetLeft + (MAIN_MAP_PIN_FULL_WIDTH / 2)) + '';
+  var findMainPinAddress = function () {
+    document.querySelector('#address').value = '' + (mapPinMain.offsetTop + MAIN_MAP_PIN_FULL_HEIGHT) + ', ' + mapPinMain.offsetLeft + '';
   };
 
   /**
@@ -172,7 +171,7 @@
 
   window.form = {
     roomNumberSelectClickHandler: roomNumberSelectClickHandler,
-    findMainPinAddress: findMainPinAdress,
+    findMainPinAddress: findMainPinAddress,
     flatTypeSelectClickHandler: flatTypeSelectClickHandler,
     upload: addHandlersToFormButtons
   };

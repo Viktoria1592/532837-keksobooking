@@ -2,7 +2,7 @@
 
 (function () {
   var ENTER_KEYCODE = 13;
-
+  var ESCAPE_KEYCODE = 27;
   /**
    }
    * Функция генерирующая случайное значение
@@ -97,6 +97,7 @@
     generateRandomNumber: generateRandomNumber,
     generateRandomArrayValue: generateRandomArrayValue,
     ENTER_KEYCODE: ENTER_KEYCODE,
+    ESCAPE_KEYCODE: ESCAPE_KEYCODE,
     onError: onError
   };
 })();

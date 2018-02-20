@@ -167,21 +167,29 @@
   };
 
   /**
-   * Функция добавляющая два обработчика события на кнопку закрытия карточки объявления
-   * (по нажатии кнопки Enter и клике на кнопку закрытия)
+   * Функция добавляющая обработчики событий для закрытия карточки объявления
+   * (по нажатии кнопки Enter, Escape и клике на кнопку закрытия)
    * @param {object} advertCard обьет карточки объявления, к которой добавляем обрабочик
    */
   var addHandlerToAdvertCard = function (advertCard) {
-    advertCard.addEventListener('keydown', function (evt) {
+    var popupClose = advertCard.querySelector('button.popup__close');
+    popupClose.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.util.ENTER_KEYCODE) {
         advertCard.classList.add('hidden');
-        advertCard.removeEventListener('keydown', buttonClickHandler);
       }
     });
 
-    advertCard.querySelector('button.popup__close').addEventListener('click', function () {
+    var escButtonDocumentHandler = function (evt) {
+      if (evt.keyCode === window.util.ESCAPE_KEYCODE) {
+        advertCard.classList.add('hidden');
+        document.removeEventListener('keydown', escButtonDocumentHandler);
+      }
+    };
+
+    document.addEventListener('keydown', escButtonDocumentHandler);
+
+    popupClose.addEventListener('click', function () {
       advertCard.classList.add('hidden');
-      advertCard.removeEventListener('click', buttonClickHandler);
     });
   };
 
