@@ -6,11 +6,13 @@
   var BOTTOM_Y_BORDER = 500;
   var LEFT_X_BORDER = 0;
   var RIGHT_X_BORDER = mapPopup.offsetWidth;
+  var mainPinInitialStateTop = 375 + 'px';
+  var mainPinInitialStateLeft = 50 + '%';
   var referenceElement = document.querySelector('div.map__filters-container');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFormFieldsets = noticeForm.querySelectorAll('fieldset');
   var map = document.querySelector('.map');
-  var mapPinMain = document.querySelector('.map__pin--main');
+  var mainPin = document.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
 
   /**
@@ -25,9 +27,9 @@
     }
 
     map.classList.add('map--faded');
-    mapPinMain.style.top = 375 + 'px';
-    mapPinMain.style.left = 50 + '%';
-    document.querySelector('#address').value = '' + (mapPinMain.offsetTop + (mapPinMain.offsetHeight / 2)) + ', ' + (mapPinMain.offsetLeft + (mapPinMain.offsetWidth / 2)) + '';
+    mainPin.style.top = mainPinInitialStateTop;
+    mainPin.style.left = mainPinInitialStateLeft;
+    document.querySelector('#address').value = '' + (mainPin.offsetTop + (mainPin.offsetHeight / 2)) + ', ' + (mainPin.offsetLeft + (mainPin.offsetWidth / 2)) + '';
   };
 
   returnsMapInitialState();
@@ -61,7 +63,7 @@
   };
 
   /**
-   * Функция добавляющая пины объявлений на карту, в случае успешной загрузки данных
+   * Функция добавляющая пины объявлений на карту, в случае успешной загрузки данных с сервера
    * @param {array} arrayOfAdverts массив с объектами объявлений
    */
   var onSuccess = function (arrayOfAdverts) {
@@ -76,7 +78,8 @@
   };
 
   /**
-   * Функция-обработчик события, по клику на главную метку делает страницу активной и заполняет адресс
+   * Функция реализует процесс перемещения главной метки по карте
+   * и записывает её положение в поле адресс
    * @param {event} evt
    */
   var mainPinMouseDownHandler = function (evt) {
@@ -101,19 +104,20 @@
         y: moveEvt.clientY
       };
 
-      if ((mapPinMain.offsetTop - shift.y) < TOP_Y_BORDER) {
-        mapPinMain.style.top = TOP_Y_BORDER + 'px';
-      } else if ((mapPinMain.offsetTop - shift.y) > BOTTOM_Y_BORDER) {
-        mapPinMain.style.top = BOTTOM_Y_BORDER + 'px';
+      // ограничение области куда можно поставить метку
+      if ((mainPin.offsetTop - shift.y) < TOP_Y_BORDER) {
+        mainPin.style.top = TOP_Y_BORDER + 'px';
+      } else if ((mainPin.offsetTop - shift.y) > BOTTOM_Y_BORDER) {
+        mainPin.style.top = BOTTOM_Y_BORDER + 'px';
       } else {
-        mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       }
-      if ((mapPinMain.offsetLeft - shift.x) < LEFT_X_BORDER) {
-        mapPinMain.style.left = LEFT_X_BORDER + 'px';
-      } else if ((mapPinMain.offsetLeft - shift.x) > RIGHT_X_BORDER) {
-        mapPinMain.style.left = RIGHT_X_BORDER + 'px';
+      if ((mainPin.offsetLeft - shift.x) < LEFT_X_BORDER) {
+        mainPin.style.left = LEFT_X_BORDER + 'px';
+      } else if ((mainPin.offsetLeft - shift.x) > RIGHT_X_BORDER) {
+        mainPin.style.left = RIGHT_X_BORDER + 'px';
       } else {
-        mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
       }
       window.form.findMainPinAddress();
     };
@@ -127,10 +131,10 @@
     document.addEventListener('mouseup', mainPinMouseUpHandler);
   };
 
-  mapPinMain.addEventListener('mousedown', mainPinMouseDownHandler);
+  mainPin.addEventListener('mousedown', mainPinMouseDownHandler);
 
   /**
-   * Функция добавляет обработчик события к переданному в нее объекту метки
+   * Функция добавляет обработчик события клика к переданному в нее объекту метки
    * @param {object} advertPin  DOM объект метки
    */
   var addHandlerPin = function (advertPin) {
