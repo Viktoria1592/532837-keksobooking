@@ -119,10 +119,7 @@
    * Функция очищающая форму от заполненых значений
    */
   var clearForm = function () {
-    var inputs = document.querySelectorAll('input:only-of-type');
-    for (var i = 0; i < inputs.length; i++) {
-      inputs[i].value = '';
-    }
+    form.reset();
   };
 
   /**
