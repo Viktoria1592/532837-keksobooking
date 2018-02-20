@@ -27,8 +27,8 @@
    */
   var fragmentFilling = function (advertsArray, renderFunction) {
     var fragment = document.createDocumentFragment();
-    for (var k = 0; k < advertsArray.length; k++) {
-      fragment.appendChild(renderFunction(advertsArray[k], k));
+    for (var i = 0; i < advertsArray.length; i++) {
+      fragment.appendChild(renderFunction(advertsArray[i], i));
     }
     return fragment;
   };

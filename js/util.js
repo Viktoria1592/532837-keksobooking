@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var ENTER_KEYCODE = 13;
+  var ESCAPE_KEYCODE = 27;
   /**
    }
    * Функция генерирующая случайное значение
@@ -67,11 +69,35 @@
     return newArray;
   };
 
+  /**
+   * Функция выводящая сообщение об ошибке в зависимости от типа ошибки
+   * @param {number} errorCode
+   */
+  var onError = function (errorCode) {
+    switch (errorCode) {
+      case 400:
+        window.error.drawMessage('Неверный запрос');
+        break;
+      case 401:
+        window.error.drawMessage('Пользователь не авторизован');
+        break;
+      case 404:
+        window.error.drawMessage('Ничего не найдено');
+        break;
+
+      default:
+        window.error.drawMessage('Cтатус ответа: : ' + errorCode);
+    }
+  };
+
   window.util = {
     generateArrayWithRandomLenght: generateArrayWithRandomLenght,
     shuffleArray: shuffleArray,
     generateRandomNonRepeatableArrayValue: generateRandomNonRepeatableArrayValue,
     generateRandomNumber: generateRandomNumber,
-    generateRandomArrayValue: generateRandomArrayValue
+    generateRandomArrayValue: generateRandomArrayValue,
+    ENTER_KEYCODE: ENTER_KEYCODE,
+    ESCAPE_KEYCODE: ESCAPE_KEYCODE,
+    onError: onError
   };
 })();

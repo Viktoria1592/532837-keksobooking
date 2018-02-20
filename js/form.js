@@ -1,9 +1,7 @@
 'use strict';
 
 (function () {
-  var MAIN_MAP_PIN_FULL_HEIGHT = 82;
-  var MAIN_MAP_PIN_FULL_WIDTH = 62;
-
+  var MAIN_MAP_PIN_FULL_HEIGHT = 87;
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
   var timeInOptions = document.querySelectorAll('#timein option');
@@ -12,6 +10,10 @@
   var roomSelector = document.querySelector('#room_number');
   var mapPinMain = document.querySelector('button.map__pin--main');
   var capacitySelectorOptions = document.querySelectorAll('#capacity option');
+  var submitButton = document.querySelector('button.form__submit');
+  var form = document.querySelector('form.notice__form');
+  var formReset = document.querySelector('.form__reset');
+
 
   /**
    * Функция синхронизирующая время заезда\выезда
@@ -71,8 +73,6 @@
 
   roomSelector.addEventListener('click', roomNumberSelectClickHandler);
 
-  var submitButton = document.querySelector('button.form__submit');
-
   /**
    * Обработчик событий, по нажатии на кнопку Опубликовать - проверяет
    * соответствует ли количество мест комнатам
@@ -110,13 +110,67 @@
   /**
    * Функция которая устанавливает значение в поле ввода адреса
    */
-  var findMainPinAdress = function () {
-    document.querySelector('#address').value = '' + (mapPinMain.offsetTop + MAIN_MAP_PIN_FULL_HEIGHT) + ', ' + (mapPinMain.offsetLeft + (MAIN_MAP_PIN_FULL_WIDTH / 2)) + '';
+  var findMainPinAddress = function () {
+    document.querySelector('#address').value = '' + (mapPinMain.offsetTop + MAIN_MAP_PIN_FULL_HEIGHT) + ', ' + mapPinMain.offsetLeft + '';
   };
+
+  /**
+   * Функция очищающая форму от заполненых значений
+   */
+  var clearForm = function () {
+    form.reset();
+  };
+
+  /**
+   * Функция добавляет обработчики событий к
+   * кнопке отправки данных и кнопке очистки страницы
+   */
+  var addHandlersToFormButtons = function () {
+    form.addEventListener('submit', uploadButtonClickHandler);
+    formReset.addEventListener('click', resetButtonClickHandler);
+  };
+
+  /**
+   * Функция-обработчик события, отправляет данные формы
+   * @param {event} evt
+   */
+  var uploadButtonClickHandler = function (evt) {
+    window.backend.uploadFormData(new FormData(form), onLoad, window.util.onError);
+    evt.preventDefault();
+  };
+
+  /**
+   * Функция-обработчик события, очищает страницу от заполненных данных
+   * @param {event} evt
+   */
+  var resetButtonClickHandler = function (evt) {
+    evt.preventDefault();
+    returnsPageToInitialState();
+  };
+
+  /**
+   * функция возвращает страницу в начальное состояние
+   * в случае успешной отправки данных на сервер
+   * @param {number} status
+   */
+  var onLoad = function () {
+    returnsPageToInitialState();
+  };
+
+  /**
+   * функция возвращает страницу в начальное состояние
+   */
+  var returnsPageToInitialState = function () {
+    window.map.removeAdvertPins();
+    clearForm();
+    window.map.returnsMapInitialState();
+  };
+
 
   window.form = {
     roomNumberSelectClickHandler: roomNumberSelectClickHandler,
-    findMainPinAdress: findMainPinAdress,
-    flatTypeSelectClickHandler: flatTypeSelectClickHandler
+    findMainPinAddress: findMainPinAddress,
+    flatTypeSelectClickHandler: flatTypeSelectClickHandler,
+    upload: addHandlersToFormButtons
   };
 })();
