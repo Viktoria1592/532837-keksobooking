@@ -33,9 +33,10 @@
   /**
    * Функция загрузки данных с заполненной формы на сервер
    * @param {node}     data       данные из формы
-   * @param {function} onSuccess
+   * @param {function} onLoad
+   * @param {function} onError
    */
-  var uploadFormData = function (data, onSuccess) {
+  var uploadFormData = function (data, onLoad, onError) {
     var URL = 'https://js.dump.academy/keksobooking';
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
@@ -48,7 +49,12 @@
       window.error.drawMessage('Запрос не успел выполниться за ' + (xhr.timeout / 1000) + 'секунд');
     });
     xhr.addEventListener('load', function () {
-      onSuccess(xhr.status);
+      if (xhr.status === 200) {
+        onLoad();
+      } else {
+        onError(xhr.status);
+      }
+
     });
 
     xhr.timeout = 10000;
