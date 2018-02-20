@@ -1,19 +1,28 @@
 'use strict';
 
 (function () {
+  var GET_URL = 'https://js.dump.academy/keksobooking/data';
+  var POST_URL = 'https://js.dump.academy/keksobooking';
+  var TIMEOUT = 10000;
+
   /**
-   * Функция загрузки объявлений с сервера
-   * @param {function} onSuccess
-   * @param {function} onError
+   * Функция создания нового запроса
+   * @param  {string}   url
+   * @param  {string}   type       тип запроса GET или POST
+   * @param  {object}   data       данные если отпарвка или false если загрузка
+   * @param  {function} onSuccess
+   * @param  {function} onError
    */
-  var downloadAdverts = function (onSuccess, onError) {
-    var URL = 'https://js.dump.academy/keksobooking/data';
+  var newRequest = function (url, type, data, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
-
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
-        onSuccess(xhr.response);
+        if (!data) {
+          onSuccess(xhr.response);
+        } else {
+          onSuccess();
+        }
       } else {
         onError(xhr.status);
       }
@@ -23,52 +32,24 @@
       window.error.drawMessage('Произошла ошибка соединения');
     });
     xhr.addEventListener('timeout', function () {
-      window.error.drawMessage('Запрос не успел выполниться за ' + (xhr.timeout / 1000) + 'секунд');
-    });
-    xhr.timeout = 10000;
-    xhr.open('GET', URL);
-    xhr.send();
-  };
-
-  /**
-   * Функция загрузки данных с заполненной формы на сервер
-   * @param {node}     data       данные из формы
-   * @param {function} onLoad
-   * @param {function} onError
-   */
-  var uploadFormData = function (data, onLoad, onError) {
-    var URL = 'https://js.dump.academy/keksobooking';
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    xhr.addEventListener('error', function () {
-      window.error.drawMessage('Произошла ошибка соединения');
+      window.error.drawMessage('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    xhr.addEventListener('timeout', function () {
-      window.error.drawMessage('Запрос не успел выполниться за ' + (xhr.timeout / 1000) + 'секунд');
-    });
-
-    xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
-        onLoad();
-      } else {
-        onError(xhr.status);
-      }
-
-    });
-
-    xhr.timeout = 10000;
-    xhr.open('POST', URL);
-    try {
+    xhr.timeout = TIMEOUT;
+    xhr.open(type, url);
+    if (data) {
       xhr.send(data);
-    } catch (err) {
-      console.log('!!!');
+    } else {
+      xhr.send();
     }
   };
 
   window.backend = {
-    downloadAdverts: downloadAdverts,
-    uploadFormData: uploadFormData
+    download: function (onSuccess, onError) {
+      newRequest(GET_URL, 'GET', false, onSuccess, onError);
+    },
+    upload: function (data, onSuccess, onError) {
+      newRequest(POST_URL, 'POST', data, onSuccess, onError);
+    }
   };
 })();

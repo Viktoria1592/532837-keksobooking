@@ -135,7 +135,7 @@
    * @param {event} evt
    */
   var uploadButtonClickHandler = function (evt) {
-    window.backend.uploadFormData(new FormData(form), onLoad, window.util.onError);
+    window.backend.upload(new FormData(form), onSuccess, window.util.onError);
     evt.preventDefault();
   };
 
@@ -153,7 +153,7 @@
    * в случае успешной отправки данных на сервер
    * @param {number} status
    */
-  var onLoad = function () {
+  var onSuccess = function () {
     returnsPageToInitialState();
   };
 

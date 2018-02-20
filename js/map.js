@@ -48,7 +48,7 @@
     map.classList.remove('map--faded');
     var flatTypeInput = document.querySelector('#type');
     flatTypeInput.addEventListener('click', window.form.flatTypeSelectClickHandler);
-    window.backend.downloadAdverts(onSuccess, window.util.onError);
+    window.backend.download(onSuccess, window.util.onError);
     window.form.upload();
   };
 
@@ -91,9 +91,6 @@
     };
 
     var mainPinMouseMoveHandler = function (moveEvt) {
-      if (noticeForm.classList.contains('notice__form--disabled')) {
-        makePageActive();
-      }
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
@@ -123,6 +120,10 @@
     };
 
     var mainPinMouseUpHandler = function () {
+      if (noticeForm.classList.contains('notice__form--disabled')) {
+        makePageActive();
+      }
+
       document.removeEventListener('mousemove', mainPinMouseMoveHandler);
       document.removeEventListener('mouseup', mainPinMouseUpHandler);
     };
