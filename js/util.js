@@ -69,6 +69,42 @@
     return newArray;
   };
 
+
+  /**
+   * Функция добавляющая всплывающее сообщение об ошибке поверх страницы
+   * @param {string} errorMessage
+   */
+  var drawMessage = function (errorMessage) {
+    var fragment = document.createDocumentFragment();
+    var node = document.createElement('div');
+    fragment.appendChild(node);
+    node.classList.add('error__message');
+    var errorMessagePopup = document.createElement('div');
+    node.appendChild(errorMessagePopup);
+    var closeButton = document.createElement('button');
+    errorMessagePopup.appendChild(closeButton);
+    closeButton.classList.add('popup__close');
+    closeButton.tabIndex = 0;
+    var message = document.createElement('p');
+    errorMessagePopup.appendChild(message);
+    message.textContent = errorMessage;
+    node.style = 'z-index: 100; background-color: rgba(192,192,192,0.7); border-radius: 10px; left: 0; right: 0; bottom: 0; top: 0; position: fixed; display: flex; align-items: center; justify-content: center;';
+    errorMessagePopup.style = 'z-index: 100; text-align: center; background-color: #FF5635; width: 300px; height: auto; border-radius: 10px; box-shadow: 5px 5px 5px rgb(90,90,90); padding: 10px; position: relative; fontSize: 30px;';
+    document.querySelector('body').style.position = 'relative';
+    document.body.insertBefore(fragment, document.body.firstChild);
+    closeButton.addEventListener('click', function () {
+      if (node !== null) {
+        node.remove();
+      }
+    });
+
+    closeButton.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.util.ENTER_KEYCODE) {
+        node.remove();
+      }
+    });
+  };
+
   /**
    * Функция выводящая сообщение об ошибке в зависимости от типа ошибки
    * @param {number} errorCode
@@ -76,17 +112,17 @@
   var onError = function (errorCode) {
     switch (errorCode) {
       case 400:
-        window.error.drawMessage('Неверный запрос');
+        drawMessage('Неверный запрос');
         break;
       case 401:
-        window.error.drawMessage('Пользователь не авторизован');
+        drawMessage('Пользователь не авторизован');
         break;
       case 404:
-        window.error.drawMessage('Ничего не найдено');
+        drawMessage('Ничего не найдено');
         break;
 
       default:
-        window.error.drawMessage('Cтатус ответа: : ' + errorCode);
+        drawMessage('Cтатус ответа: ' + errorCode);
     }
   };
 
@@ -98,6 +134,7 @@
     generateRandomArrayValue: generateRandomArrayValue,
     ENTER_KEYCODE: ENTER_KEYCODE,
     ESCAPE_KEYCODE: ESCAPE_KEYCODE,
-    onError: onError
+    onError: onError,
+    drawMessage: drawMessage
   };
 })();

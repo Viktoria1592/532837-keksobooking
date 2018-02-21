@@ -7,7 +7,7 @@
 
   /**
    * Функция создания нового запроса
-   * @param  {string}   url
+   * @param  {string}   url        адресс сервера
    * @param  {string}   type       тип запроса GET или POST
    * @param  {object}   data       данные если отпарвка или false если загрузка
    * @param  {function} onSuccess
@@ -29,10 +29,10 @@
     });
 
     xhr.addEventListener('error', function () {
-      window.error.drawMessage('Произошла ошибка соединения');
+      window.util.drawMessage('Произошла ошибка соединения');
     });
     xhr.addEventListener('timeout', function () {
-      window.error.drawMessage('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      window.util.drawMessage('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
     xhr.timeout = TIMEOUT;
