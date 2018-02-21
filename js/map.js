@@ -14,6 +14,7 @@
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
+  var escButtonDocumentHandler;
 
   /**
    * Функция возвращает страницу в её начальное состояние
@@ -24,6 +25,10 @@
 
     for (var n = 0; n < noticeFormFieldsets.length; n++) {
       noticeFormFieldsets[n].disabled = true;
+    }
+
+    if (document.querySelectorAll('.map .map__card').length > 0) {
+      closeOpenedCards();
     }
 
     map.classList.add('map--faded');
@@ -169,6 +174,7 @@
     if (mapPopup.contains(mapCard)) {
       mapPopup.removeChild(mapCard);
     }
+    document.removeEventListener('keydown', escButtonDocumentHandler);
   };
 
   /**
@@ -180,13 +186,14 @@
     var popupClose = advertCard.querySelector('button.popup__close');
     popupClose.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.util.ENTER_KEYCODE) {
-        advertCard.classList.add('hidden');
+        closeOpenedCards();
+        document.removeEventListener('keydown', escButtonDocumentHandler);
       }
     });
 
-    var escButtonDocumentHandler = function (evt) {
+    escButtonDocumentHandler = function (evt) {
       if (evt.keyCode === window.util.ESCAPE_KEYCODE) {
-        advertCard.classList.add('hidden');
+        closeOpenedCards();
         document.removeEventListener('keydown', escButtonDocumentHandler);
       }
     };
@@ -194,7 +201,8 @@
     document.addEventListener('keydown', escButtonDocumentHandler);
 
     popupClose.addEventListener('click', function () {
-      advertCard.classList.add('hidden');
+      closeOpenedCards();
+      document.removeEventListener('keydown', escButtonDocumentHandler);
     });
   };
 
