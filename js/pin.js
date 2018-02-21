@@ -2,7 +2,7 @@
 
 (function () {
   var templateOfLabel = document.querySelector('template').content.querySelector('article + button');
-
+  var quantityOfDisplayedPins = 5;
   /**
    * Функция заполняющая положение метки на карте
    * и изображение аватара пользователя в ней
@@ -27,7 +27,7 @@
    */
   var fragmentFilling = function (advertsArray, renderFunction) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < advertsArray.length; i++) {
+    for (var i = 0; i < quantityOfDisplayedPins; i++) {
       fragment.appendChild(renderFunction(advertsArray[i], i));
     }
     return fragment;

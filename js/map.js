@@ -14,6 +14,7 @@
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
+  var mapFiltersForm = document.querySelectorAll('.map__filters>*');
   var escButtonDocumentHandler;
 
   /**
@@ -23,13 +24,17 @@
   var returnsMapInitialState = function () {
     noticeForm.classList.add('notice__form--disabled');
 
-    for (var n = 0; n < noticeFormFieldsets.length; n++) {
-      noticeFormFieldsets[n].disabled = true;
-    }
+    noticeFormFieldsets.forEach(function (element) {
+      element.disabled = true;
+    });
 
     if (document.querySelectorAll('.map .map__card').length > 0) {
       closeOpenedCards();
     }
+
+    mapFiltersForm.forEach(function (element) {
+      element.disabled = true;
+    });
 
     map.classList.add('map--faded');
     mainPin.style.top = mainPinInitialStateTop;
@@ -46,15 +51,16 @@
   var makePageActive = function () {
     noticeForm.classList.remove('notice__form--disabled');
 
-    for (var n = 0; n < noticeFormFieldsets.length; n++) {
-      noticeFormFieldsets[n].disabled = false;
-    }
+    noticeFormFieldsets.forEach(function (element) {
+      element.disabled = false;
+    });
 
     map.classList.remove('map--faded');
     var flatTypeInput = document.querySelector('#type');
     flatTypeInput.addEventListener('click', window.form.flatTypeSelectClickHandler);
     window.backend.download(onSuccess, window.util.onError);
     window.form.upload();
+    window.form.findMainPinAddress();
   };
 
   /**
@@ -62,9 +68,10 @@
    */
   var removeAdvertPins = function () {
     var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
-    for (var i = 0; i < similarAdvertPins.length; i++) {
-      similarAdvertPins[i].remove();
-    }
+
+    similarAdvertPins.forEach(function (element) {
+      element.remove();
+    });
   };
 
   /**
@@ -76,10 +83,13 @@
     mapPins.appendChild(window.pin.fragmentFilling(arrayOfAdverts, window.pin.renderAdvertLabel));
     var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
 
-    for (var p = 0; p < similarAdvertPins.length; p++) {
-      var advertPin = similarAdvertPins[p];
-      addHandlerPin(advertPin);
-    }
+    mapFiltersForm.forEach(function (element) {
+      element.disabled = false;
+    });
+
+    similarAdvertPins.forEach(function (element) {
+      addHandlerToAdvertPin(element);
+    });
   };
 
   /**
@@ -143,7 +153,7 @@
    * Функция добавляет обработчик события клика к переданному в нее объекту метки
    * @param {object} advertPin  DOM объект метки
    */
-  var addHandlerPin = function (advertPin) {
+  var addHandlerToAdvertPin = function (advertPin) {
     advertPin.addEventListener('click', buttonClickHandler);
   };
 
