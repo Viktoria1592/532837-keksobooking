@@ -74,6 +74,11 @@
     });
   };
 
+  var mapSelectFilterChangeHandler = function () {
+    window.data.filter();
+    //console.log(window.data.adverts);
+  };
+
   /**
    * Функция добавляющая пины объявлений на карту, в случае успешной загрузки данных с сервера
    * @param {array} arrayOfAdverts массив с объектами объявлений
@@ -85,6 +90,7 @@
 
     mapFiltersForm.forEach(function (element) {
       element.disabled = false;
+      element.addEventListener('change', mapSelectFilterChangeHandler);
     });
 
     similarAdvertPins.forEach(function (element) {

@@ -2,7 +2,13 @@
 
 (function () {
   var adverts;
+
+  var filter = function () {
+    console.log(adverts);
+  };
+
   window.data = {
-    adverts: adverts
+    adverts: adverts,
+    filter: filter
   };
 })();
