@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var ENTER_KEYCODE = 13;
-  var ESCAPE_KEYCODE = 27;
   /**
    }
    * Функция генерирующая случайное значение
@@ -99,7 +97,7 @@
     });
 
     closeButton.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.util.ENTER_KEYCODE) {
+      if (evt.keyCode === window.data.ENTER_KEYCODE) {
         node.remove();
       }
     });
@@ -132,8 +130,6 @@
     generateRandomNonRepeatableArrayValue: generateRandomNonRepeatableArrayValue,
     generateRandomNumber: generateRandomNumber,
     generateRandomArrayValue: generateRandomArrayValue,
-    ENTER_KEYCODE: ENTER_KEYCODE,
-    ESCAPE_KEYCODE: ESCAPE_KEYCODE,
     onError: onError,
     drawMessage: drawMessage
   };

@@ -19,6 +19,8 @@
     return newAdvert;
   };
 
+
+
   /**
    * Функция добавляет готовые метки объявлений в DocumentFragment
    * @param  {array}    advertsArray     массив с объектами объявлений
@@ -27,7 +29,7 @@
    */
   var fragmentFilling = function (advertsArray, renderFunction) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < quantityOfDisplayedPins; i++) {
+    for (var i = 0; i < advertsArray.length; i++) {
       fragment.appendChild(renderFunction(advertsArray[i], i));
     }
     return fragment;

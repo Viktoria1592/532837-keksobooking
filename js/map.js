@@ -74,9 +74,63 @@
     });
   };
 
+  var mapFilters = {
+    'housing-price': {
+      'any': [0, 100000000000000000],
+      'middle': [10000, 50000],
+      'low': [0, 10000],
+      'high': [50000, 100000000000000000]
+    }
+  };
+
+  var housingType = document.querySelector('#housing-type');
+  var housingPrice = document.querySelector('#housing-price');
+  var housingRooms = document.querySelector('#housing-rooms');
+  var housingGuests = document.querySelector('#housing-guests');
+  var housingFeatures = document.querySelectorAll('#housing-features input');
+
+  var filter = function (item) {
+    var counter = 0;
+    if (housingType.value === item.offer.type || housingType.value === 'any') {
+      counter++;
+    }
+    if (mapFilters[housingPrice.id][housingPrice.value][0] <= item.offer.price && mapFilters[housingPrice.id][housingPrice.value][1] >= item.offer.price) {
+      counter++;
+    }
+
+    if (parseInt(housingRooms.value, 10) === parseInt(item.offer.rooms, 10) || housingRooms.value === 'any') {
+      counter++;
+    }
+    if (parseInt(housingGuests.value, 10) === parseInt(item.offer.guests, 10) || housingGuests.value === 'any') {
+      counter++;
+    }
+
+    housingFeatures.forEach(function (element) {
+      if (element.checked) {
+        if (item.offer.features.includes(element.value)) {
+          counter++;
+        } else {
+          counter -= counter;
+        }
+      } else {
+        counter++;
+      }
+    });
+    if (counter === 10) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   var mapSelectFilterChangeHandler = function () {
-    window.data.filter();
-    //console.log(window.data.adverts);
+    removeAdvertPins();
+    var filteredArray = window.data.adverts.filter(filter);
+    mapPins.appendChild(window.pin.fragmentFilling(filteredArray, window.pin.renderAdvertLabel));
+    var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
+    similarAdvertPins.forEach(function (element) {
+      addHandlerToAdvertPin(element);
+    });
   };
 
   /**
@@ -201,14 +255,14 @@
   var addHandlerToAdvertCard = function (advertCard) {
     var popupClose = advertCard.querySelector('button.popup__close');
     popupClose.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.util.ENTER_KEYCODE) {
+      if (evt.keyCode === window.data.ENTER_KEYCODE) {
         closeOpenedCards();
         document.removeEventListener('keydown', escButtonDocumentHandler);
       }
     });
 
     escButtonDocumentHandler = function (evt) {
-      if (evt.keyCode === window.util.ESCAPE_KEYCODE) {
+      if (evt.keyCode === window.data.ESCAPE_KEYCODE) {
         closeOpenedCards();
         document.removeEventListener('keydown', escButtonDocumentHandler);
       }
