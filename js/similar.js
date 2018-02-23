@@ -17,13 +17,11 @@
   };
 
   /**
-   *  Функция проверяет соответствует ли переданый объект фильтру карты
+   * ssФункция проверяет соответствует ли переданый объект фильтру карты
    * @param  {object}  item объект объявления
    * @return {boolean} true в случае соответствия фильтру, false в обратном случае
    */
   var checkAccordance = function (item) {
-    console.log(1);
-
     var counter = 0;
     if (housingType.value === item.offer.type || housingType.value === 'any') {
       counter++;

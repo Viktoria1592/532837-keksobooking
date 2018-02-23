@@ -136,7 +136,6 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-
       // ограничение области куда можно поставить метку
       if ((mainPin.offsetTop - shift.y) < TOP_Y_BORDER) {
         mainPin.style.top = TOP_Y_BORDER + 'px';
