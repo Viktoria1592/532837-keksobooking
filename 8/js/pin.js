@@ -21,13 +21,16 @@
 
   /**
    * Функция добавляет готовые метки объявлений в DocumentFragment
+   * (количество меток не больше чем quantityOfDisplayedPins)
    * @param  {array}    advertsArray     массив с объектами объявлений
    * @param  {function} renderFunction   функция заполняющая шаблон данными из advertsArray
    * @return {Node}                      DOM элемент с метками
    */
   var fragmentFilling = function (advertsArray, renderFunction) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < quantityOfDisplayedPins; i++) {
+    var showedPins = advertsArray.length >= quantityOfDisplayedPins ? quantityOfDisplayedPins : advertsArray.length;
+
+    for (var i = 0; i < showedPins; i++) {
       fragment.appendChild(renderFunction(advertsArray[i], i));
     }
     return fragment;

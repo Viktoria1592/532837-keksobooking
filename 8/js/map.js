@@ -74,9 +74,22 @@
     });
   };
 
+  /**
+   * Функция-обработчик события, добавляет на карту отфильтрованые метки
+   */
   var mapSelectFilterChangeHandler = function () {
-    window.data.filter();
-    //console.log(window.data.adverts);
+    window.debounce(function () {
+      removeAdvertPins();
+      closeOpenedCards();
+      var filteredArray = window.data.adverts.filter(window.similar.checkAccordance);
+      mapPins.appendChild(window.pin.fragmentFilling(filteredArray, window.pin.renderAdvertLabel));
+      var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
+      similarAdvertPins.forEach(function (element) {
+        element.addEventListener('click', function (evt) {
+          buttonClickHandler(evt, filteredArray);
+        });
+      });
+    });
   };
 
   /**
@@ -94,7 +107,9 @@
     });
 
     similarAdvertPins.forEach(function (element) {
-      addHandlerToAdvertPin(element);
+      element.addEventListener('click', function (evt) {
+        buttonClickHandler(evt, window.data.adverts);
+      });
     });
   };
 
@@ -121,7 +136,6 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-
       // ограничение области куда можно поставить метку
       if ((mainPin.offsetTop - shift.y) < TOP_Y_BORDER) {
         mainPin.style.top = TOP_Y_BORDER + 'px';
@@ -156,28 +170,21 @@
   mainPin.addEventListener('mousedown', mainPinMouseDownHandler);
 
   /**
-   * Функция добавляет обработчик события клика к переданному в нее объекту метки
-   * @param {object} advertPin  DOM объект метки
-   */
-  var addHandlerToAdvertPin = function (advertPin) {
-    advertPin.addEventListener('click', buttonClickHandler);
-  };
-
-  /**
-   * Функция-обработчик события, генерирует соответственный бъект карточки
-   * объявления и добавляет обработчик события для закрытия карточки.
+   * Функция-обработчик события, после клика по метке генерирует бъект её карточки
+   * добавляет обработчик события для закрытия карточки.
    * Также перед открытием следующих карточек - проверяет есть ли открытые и удаляет их.
    * @param {object} evt
+   * @param {array}  arr  массив с объектами объявлений
    */
-  var buttonClickHandler = function (evt) {
+  var buttonClickHandler = function (evt, arr) {
     closeOpenedCards();
     var evtImgClick = evt.path[1].dataset.id;
     var evtBorderClick = evt.path[0].dataset.id;
     if (evt.path[0].tagName === 'IMG') {
-      mapPopup.insertBefore(window.card.addToMap(window.data.adverts, window.card.renderAdvert, evtImgClick), referenceElement);
+      mapPopup.insertBefore(window.card.addToMap(arr, window.card.renderAdvert, evtImgClick), referenceElement);
       addHandlerToAdvertCard(document.querySelector('article.map__card'));
     } else {
-      mapPopup.insertBefore(window.card.addToMap(window.data.adverts, window.card.renderAdvert, evtBorderClick), referenceElement);
+      mapPopup.insertBefore(window.card.addToMap(arr, window.card.renderAdvert, evtBorderClick), referenceElement);
       addHandlerToAdvertCard(document.querySelector('article.map__card'));
     }
   };
@@ -201,14 +208,14 @@
   var addHandlerToAdvertCard = function (advertCard) {
     var popupClose = advertCard.querySelector('button.popup__close');
     popupClose.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.util.ENTER_KEYCODE) {
+      if (evt.keyCode === window.data.ENTER_KEYCODE) {
         closeOpenedCards();
         document.removeEventListener('keydown', escButtonDocumentHandler);
       }
     });
 
     escButtonDocumentHandler = function (evt) {
-      if (evt.keyCode === window.util.ESCAPE_KEYCODE) {
+      if (evt.keyCode === window.data.ESCAPE_KEYCODE) {
         closeOpenedCards();
         document.removeEventListener('keydown', escButtonDocumentHandler);
       }
