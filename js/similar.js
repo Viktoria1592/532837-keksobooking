@@ -17,7 +17,7 @@
   };
 
   /**
-   * ssФункция проверяет соответствует ли переданый объект фильтру карты
+   * Функция проверяет соответствует ли переданый объект фильтру карты
    * @param  {object}  item объект объявления
    * @return {boolean} true в случае соответствия фильтру, false в обратном случае
    */
@@ -29,7 +29,6 @@
     if (mapFilters[housingPrice.id][housingPrice.value][0] <= item.offer.price && mapFilters[housingPrice.id][housingPrice.value][1] >= item.offer.price) {
       counter++;
     }
-
     if (parseInt(housingRooms.value, 10) === parseInt(item.offer.rooms, 10) || housingRooms.value === 'any') {
       counter++;
     }

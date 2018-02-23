@@ -9,36 +9,46 @@
 
   /**
    * Функция заполняющая особенности жилья в карточку обьявления
+   * (в случае отсутствия особенностей - удаляет блок .popup__features)
    * @param {object} advertObject  объект с данными объявления
    * @param {node}   сardTemplate  шаблон, DOM-элемент с карточкой обьявления
    */
-  var addingAdvertFeatures = function (advertObject, сardTemplate) {
+  var addAdvertFeatures = function (advertObject, сardTemplate) {
     var popupFatures = сardTemplate.querySelector('.popup__features');
     popupFatures.textContent = '';
 
-    for (var m = 0; m < advertObject.offer.features.length; m++) {
-      var newFeature = cardTemplate.querySelector('.feature--wifi').cloneNode(true);
-      newFeature.classList.remove('feature--wifi');
-      newFeature.classList.add('feature--' + advertObject.offer.features[m]);
-      popupFatures.appendChild(newFeature);
+    if (advertObject.offer.features.length === 0) {
+      popupFatures.remove();
+    } else {
+      for (var m = 0; m < advertObject.offer.features.length; m++) {
+        var newFeature = cardTemplate.querySelector('.feature--wifi').cloneNode(true);
+        newFeature.classList.remove('feature--wifi');
+        newFeature.classList.add('feature--' + advertObject.offer.features[m]);
+        popupFatures.appendChild(newFeature);
+      }
     }
   };
 
   /**
    * Функция заполняющая изображения жилья в карточку обьявления
+   * (в случае отсутствия изображений - удаляет блок .popup__pictures)
    * @param {object} advertObject  объект с данными объявления
    * @param {node}   сardTemplate  шаблон, DOM-элемент с карточкой обьявления
    */
-  var addingAdvertImages = function (advertObject, сardTemplate) {
+  var addAdvertImages = function (advertObject, сardTemplate) {
     var popupPictures = сardTemplate.querySelector('ul.popup__pictures');
     popupPictures.textContent = '';
 
-    for (var n = 0; n < advertObject.offer.photos.length; n++) {
-      var newImage = cardTemplate.querySelector('ul.popup__pictures li img').cloneNode(true);
-      newImage.src = advertObject.offer.photos[n];
-      newImage.height = FLAT_IMAGES_HEIGHT;
-      newImage.width = FLAT_IMAGES_WIDTH;
-      popupPictures.appendChild(newImage);
+    if (advertObject.offer.photos.length === 0) {
+      popupPictures.remove();
+    } else {
+      for (var n = 0; n < advertObject.offer.photos.length; n++) {
+        var newImage = cardTemplate.querySelector('ul.popup__pictures li img').cloneNode(true);
+        newImage.src = advertObject.offer.photos[n];
+        newImage.height = FLAT_IMAGES_HEIGHT;
+        newImage.width = FLAT_IMAGES_WIDTH;
+        popupPictures.appendChild(newImage);
+      }
     }
   };
 
@@ -75,9 +85,9 @@
     newCard.querySelector('h4').textContent = typeLabels[advert.offer.type];
     newCard.querySelector('h4 + p').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
     newCard.querySelector('h4 + p + p').textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
-    addingAdvertFeatures(advert, newCard);
-    newCard.querySelector('ul.popup__features + p').textContent = advert.offer.description;
-    addingAdvertImages(advert, newCard);
+    addAdvertFeatures(advert, newCard);
+    newCard.querySelector('p:last-of-type').textContent = advert.offer.description;
+    addAdvertImages(advert, newCard);
     newCard.querySelector('img.popup__avatar').src = advert.author.avatar;
     newCard.dataset.id = uniqueIDNumber;
     newCard.querySelector('button.popup__close').tabIndex = 0;
