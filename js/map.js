@@ -78,14 +78,16 @@
    * Функция-обработчик события, добавляет на карту отфильтрованые метки
    */
   var mapSelectFilterChangeHandler = function () {
-    removeAdvertPins();
-    closeOpenedCards();
-    var filteredArray = window.data.adverts.filter(window.similar.checkAccordance);
-    mapPins.appendChild(window.pin.fragmentFilling(filteredArray, window.pin.renderAdvertLabel));
-    var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
-    similarAdvertPins.forEach(function (element) {
-      element.addEventListener('click', function (evt) {
-        buttonClickHandler(evt, filteredArray);
+    window.debounce(function () {
+      removeAdvertPins();
+      closeOpenedCards();
+      var filteredArray = window.data.adverts.filter(window.similar.checkAccordance);
+      mapPins.appendChild(window.pin.fragmentFilling(filteredArray, window.pin.renderAdvertLabel));
+      var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
+      similarAdvertPins.forEach(function (element) {
+        element.addEventListener('click', function (evt) {
+          buttonClickHandler(evt, filteredArray);
+        });
       });
     });
   };
