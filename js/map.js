@@ -74,62 +74,19 @@
     });
   };
 
-  var mapFilters = {
-    'housing-price': {
-      'any': [0, 100000000000000000],
-      'middle': [10000, 50000],
-      'low': [0, 10000],
-      'high': [50000, 100000000000000000]
-    }
-  };
-
-  var housingType = document.querySelector('#housing-type');
-  var housingPrice = document.querySelector('#housing-price');
-  var housingRooms = document.querySelector('#housing-rooms');
-  var housingGuests = document.querySelector('#housing-guests');
-  var housingFeatures = document.querySelectorAll('#housing-features input');
-
-  var filter = function (item) {
-    var counter = 0;
-    if (housingType.value === item.offer.type || housingType.value === 'any') {
-      counter++;
-    }
-    if (mapFilters[housingPrice.id][housingPrice.value][0] <= item.offer.price && mapFilters[housingPrice.id][housingPrice.value][1] >= item.offer.price) {
-      counter++;
-    }
-
-    if (parseInt(housingRooms.value, 10) === parseInt(item.offer.rooms, 10) || housingRooms.value === 'any') {
-      counter++;
-    }
-    if (parseInt(housingGuests.value, 10) === parseInt(item.offer.guests, 10) || housingGuests.value === 'any') {
-      counter++;
-    }
-
-    housingFeatures.forEach(function (element) {
-      if (element.checked) {
-        if (item.offer.features.includes(element.value)) {
-          counter++;
-        } else {
-          counter -= counter;
-        }
-      } else {
-        counter++;
-      }
-    });
-    if (counter === 10) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
+  /**
+   * Функция-обработчик события, добавляет на карту отфильтрованые метки
+   */
   var mapSelectFilterChangeHandler = function () {
     removeAdvertPins();
-    var filteredArray = window.data.adverts.filter(filter);
+    closeOpenedCards();
+    var filteredArray = window.data.adverts.filter(window.similar.checkAccordance);
     mapPins.appendChild(window.pin.fragmentFilling(filteredArray, window.pin.renderAdvertLabel));
     var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
     similarAdvertPins.forEach(function (element) {
-      addHandlerToAdvertPin(element);
+      element.addEventListener('click', function (evt) {
+        buttonClickHandler(evt, filteredArray);
+      });
     });
   };
 
@@ -148,7 +105,9 @@
     });
 
     similarAdvertPins.forEach(function (element) {
-      addHandlerToAdvertPin(element);
+      element.addEventListener('click', function (evt) {
+        buttonClickHandler(evt, window.data.adverts);
+      });
     });
   };
 
@@ -210,28 +169,21 @@
   mainPin.addEventListener('mousedown', mainPinMouseDownHandler);
 
   /**
-   * Функция добавляет обработчик события клика к переданному в нее объекту метки
-   * @param {object} advertPin  DOM объект метки
-   */
-  var addHandlerToAdvertPin = function (advertPin) {
-    advertPin.addEventListener('click', buttonClickHandler);
-  };
-
-  /**
-   * Функция-обработчик события, генерирует соответственный бъект карточки
-   * объявления и добавляет обработчик события для закрытия карточки.
+   * Функция-обработчик события, после клика по метке генерирует бъект её карточки
+   * добавляет обработчик события для закрытия карточки.
    * Также перед открытием следующих карточек - проверяет есть ли открытые и удаляет их.
    * @param {object} evt
+   * @param {array}  arr  массив с объектами объявлений
    */
-  var buttonClickHandler = function (evt) {
+  var buttonClickHandler = function (evt, arr) {
     closeOpenedCards();
     var evtImgClick = evt.path[1].dataset.id;
     var evtBorderClick = evt.path[0].dataset.id;
     if (evt.path[0].tagName === 'IMG') {
-      mapPopup.insertBefore(window.card.addToMap(window.data.adverts, window.card.renderAdvert, evtImgClick), referenceElement);
+      mapPopup.insertBefore(window.card.addToMap(arr, window.card.renderAdvert, evtImgClick), referenceElement);
       addHandlerToAdvertCard(document.querySelector('article.map__card'));
     } else {
-      mapPopup.insertBefore(window.card.addToMap(window.data.adverts, window.card.renderAdvert, evtBorderClick), referenceElement);
+      mapPopup.insertBefore(window.card.addToMap(arr, window.card.renderAdvert, evtBorderClick), referenceElement);
       addHandlerToAdvertCard(document.querySelector('article.map__card'));
     }
   };
