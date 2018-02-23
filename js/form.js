@@ -12,7 +12,7 @@
   var capacitySelectorOptions = document.querySelectorAll('#capacity option');
   var submitButton = document.querySelector('button.form__submit');
   var form = document.querySelector('form.notice__form');
-  var mapFiltersForm = document.querySelector('.map__filters')
+  var mapFiltersForm = document.querySelector('.map__filters');
   var formReset = document.querySelector('.form__reset');
 
 
