@@ -22,36 +22,28 @@
    * @return {boolean} true в случае соответствия фильтру, false в обратном случае
    */
   var checkAccordance = function (item) {
-    var counter = 0;
-    if (housingType.value === item.offer.type || housingType.value === 'any') {
-      counter++;
+    var counter = true;
+    if (housingType.value !== item.offer.type && housingType.value !== 'any') {
+      return false;
     }
-    if (mapFilters[housingPrice.id][housingPrice.value][0] <= item.offer.price && mapFilters[housingPrice.id][housingPrice.value][1] >= item.offer.price) {
-      counter++;
+    if (mapFilters[housingPrice.id][housingPrice.value][0] > item.offer.price && mapFilters[housingPrice.id][housingPrice.value][1] < item.offer.price) {
+      return false;
     }
-    if (parseInt(housingRooms.value, 10) === parseInt(item.offer.rooms, 10) || housingRooms.value === 'any') {
-      counter++;
+    if (parseInt(housingRooms.value, 10) !== parseInt(item.offer.rooms, 10) && housingRooms.value !== 'any') {
+      return false;
     }
-    if (parseInt(housingGuests.value, 10) === parseInt(item.offer.guests, 10) || housingGuests.value === 'any') {
-      counter++;
+    if (parseInt(housingGuests.value, 10) !== parseInt(item.offer.guests, 10) && housingGuests.value !== 'any') {
+      return false;
     }
 
     housingFeatures.forEach(function (element) {
       if (element.checked) {
-        if (item.offer.features.includes(element.value)) {
-          counter++;
-        } else {
-          counter -= counter;
+        if (!item.offer.features.includes(element.value)) {
+          counter = false;
         }
-      } else {
-        counter++;
       }
     });
-    if (counter === 10) {
-      return true;
-    } else {
-      return false;
-    }
+    return counter;
   };
 
   window.similar = {
