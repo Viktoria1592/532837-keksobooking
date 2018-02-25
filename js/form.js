@@ -30,15 +30,21 @@
     }
   };
 
+  /**
+   * Функция-обработчик события, синхронизирет время заезда\выезда
+   */
   var timeInClickHandler = function () {
     changeTime(timeInOptions, timeOutOptions);
   };
 
+  /**
+   * Функция-обработчик события, синхронизирет время выезда\заезда
+   */
   var timeOutClickHandler = function () {
     changeTime(timeOutOptions, timeInOptions);
   };
-  timeIn.addEventListener('click', timeInClickHandler);
-  timeOut.addEventListener('click', timeOutClickHandler);
+  timeIn.addEventListener('change', timeInClickHandler);
+  timeOut.addEventListener('change', timeOutClickHandler);
 
   /**
    * функция делает невозможным выбор в "Количество мест" несовпадающих значений с "Кол-во комнат"

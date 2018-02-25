@@ -4,7 +4,7 @@
   var GET_URL = 'https://js.dump.academy/keksobooking/data';
   var POST_URL = 'https://js.dump.academy/keksobooking';
   var TIMEOUT = 10000;
-
+  var STATUS_OK = 200;
   /**
    * Функция создания нового запроса
    * @param  {string}   url        адресс сервера
@@ -17,7 +17,7 @@
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === STATUS_OK) {
         if (!data) {
           onSuccess(xhr.response);
         } else {

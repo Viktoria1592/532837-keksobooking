@@ -15,6 +15,7 @@
   var mainPin = document.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
   var mapFiltersForm = document.querySelectorAll('.map__filters>*');
+  var DEBOUNCE_INTERVAL = 500;
   var escButtonDocumentHandler;
 
   /**
@@ -89,7 +90,7 @@
           buttonClickHandler(evt, filteredArray);
         });
       });
-    });
+    }, DEBOUNCE_INTERVAL);
   };
 
   /**
