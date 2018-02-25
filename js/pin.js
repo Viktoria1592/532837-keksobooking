@@ -3,6 +3,7 @@
 (function () {
   var templateOfLabel = document.querySelector('template').content.querySelector('article + button');
   var quantityOfDisplayedPins = 5;
+
   /**
    * Функция заполняющая положение метки на карте
    * и изображение аватара пользователя в ней
