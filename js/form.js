@@ -12,6 +12,7 @@
   var capacitySelectorOptions = document.querySelectorAll('#capacity option');
   var submitButton = document.querySelector('button.form__submit');
   var form = document.querySelector('form.notice__form');
+  var mapFiltersForm = document.querySelector('.map__filters');
   var formReset = document.querySelector('.form__reset');
 
 
@@ -29,15 +30,21 @@
     }
   };
 
+  /**
+   * Функция-обработчик события, синхронизирет время заезда\выезда
+   */
   var timeInClickHandler = function () {
     changeTime(timeInOptions, timeOutOptions);
   };
 
+  /**
+   * Функция-обработчик события, синхронизирет время выезда\заезда
+   */
   var timeOutClickHandler = function () {
     changeTime(timeOutOptions, timeInOptions);
   };
-  timeIn.addEventListener('click', timeInClickHandler);
-  timeOut.addEventListener('click', timeOutClickHandler);
+  timeIn.addEventListener('change', timeInClickHandler);
+  timeOut.addEventListener('change', timeOutClickHandler);
 
   /**
    * функция делает невозможным выбор в "Количество мест" несовпадающих значений с "Кол-во комнат"
@@ -119,6 +126,7 @@
    */
   var clearForm = function () {
     form.reset();
+    mapFiltersForm.reset();
   };
 
   /**
@@ -135,7 +143,7 @@
    * @param {event} evt
    */
   var uploadButtonClickHandler = function (evt) {
-    window.backend.uploadFormData(new FormData(form), onLoad, window.util.onError);
+    window.backend.upload(new FormData(form), onSuccess, window.util.onError);
     evt.preventDefault();
   };
 
@@ -153,7 +161,7 @@
    * в случае успешной отправки данных на сервер
    * @param {number} status
    */
-  var onLoad = function () {
+  var onSuccess = function () {
     returnsPageToInitialState();
   };
 

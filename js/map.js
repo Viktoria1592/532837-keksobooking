@@ -1,19 +1,23 @@
 'use strict';
 
 (function () {
-  var mapPopup = document.querySelector('section.map');
   var TOP_Y_BORDER = 150;
   var BOTTOM_Y_BORDER = 500;
   var LEFT_X_BORDER = 0;
-  var RIGHT_X_BORDER = mapPopup.offsetWidth;
-  var mainPinInitialStateTop = 375 + 'px';
-  var mainPinInitialStateLeft = 50 + '%';
+  var RIGHT_X_BORDER = document.querySelector('section.map').offsetWidth;
+  var DEBOUNCE_INTERVAL = 500;
+  var MAIN_PIN_INITIAL_STATE_TOP = 375 + 'px';
+  var MAIN_PIN_INITIAL_STATE_LEFT = 50 + '%';
+
+  var mapPopup = document.querySelector('section.map');
   var referenceElement = document.querySelector('div.map__filters-container');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFormFieldsets = noticeForm.querySelectorAll('fieldset');
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
+  var mapFiltersForm = document.querySelectorAll('.map__filters>*');
+  var escButtonDocumentHandler;
 
   /**
    * Функция возвращает страницу в её начальное состояние
@@ -22,13 +26,21 @@
   var returnsMapInitialState = function () {
     noticeForm.classList.add('notice__form--disabled');
 
-    for (var n = 0; n < noticeFormFieldsets.length; n++) {
-      noticeFormFieldsets[n].disabled = true;
+    noticeFormFieldsets.forEach(function (element) {
+      element.disabled = true;
+    });
+
+    if (document.querySelectorAll('.map .map__card').length > 0) {
+      closeOpenedCards();
     }
 
+    mapFiltersForm.forEach(function (element) {
+      element.disabled = true;
+    });
+
     map.classList.add('map--faded');
-    mainPin.style.top = mainPinInitialStateTop;
-    mainPin.style.left = mainPinInitialStateLeft;
+    mainPin.style.top = MAIN_PIN_INITIAL_STATE_TOP;
+    mainPin.style.left = MAIN_PIN_INITIAL_STATE_LEFT;
     document.querySelector('#address').value = '' + (mainPin.offsetTop + (mainPin.offsetHeight / 2)) + ', ' + (mainPin.offsetLeft + (mainPin.offsetWidth / 2)) + '';
   };
 
@@ -41,15 +53,16 @@
   var makePageActive = function () {
     noticeForm.classList.remove('notice__form--disabled');
 
-    for (var n = 0; n < noticeFormFieldsets.length; n++) {
-      noticeFormFieldsets[n].disabled = false;
-    }
+    noticeFormFieldsets.forEach(function (element) {
+      element.disabled = false;
+    });
 
     map.classList.remove('map--faded');
     var flatTypeInput = document.querySelector('#type');
     flatTypeInput.addEventListener('click', window.form.flatTypeSelectClickHandler);
-    window.backend.downloadAdverts(onSuccess, window.util.onError);
+    window.backend.download(onSuccess, window.util.onError);
     window.form.upload();
+    window.form.findMainPinAddress();
   };
 
   /**
@@ -57,9 +70,28 @@
    */
   var removeAdvertPins = function () {
     var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
-    for (var i = 0; i < similarAdvertPins.length; i++) {
-      similarAdvertPins[i].remove();
-    }
+
+    similarAdvertPins.forEach(function (element) {
+      element.remove();
+    });
+  };
+
+  /**
+   * Функция-обработчик события, добавляет на карту отфильтрованые метки
+   */
+  var mapSelectFilterChangeHandler = function () {
+    window.util.debounce(function () {
+      removeAdvertPins();
+      closeOpenedCards();
+      var filteredArray = window.data.adverts.filter(window.similar.checkAccordance);
+      mapPins.appendChild(window.pin.fragmentFilling(filteredArray, window.pin.renderAdvertLabel));
+      var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
+      similarAdvertPins.forEach(function (element) {
+        element.addEventListener('click', function (evt) {
+          buttonClickHandler(evt, filteredArray);
+        });
+      });
+    }, DEBOUNCE_INTERVAL);
   };
 
   /**
@@ -71,10 +103,16 @@
     mapPins.appendChild(window.pin.fragmentFilling(arrayOfAdverts, window.pin.renderAdvertLabel));
     var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
 
-    for (var p = 0; p < similarAdvertPins.length; p++) {
-      var advertPin = similarAdvertPins[p];
-      addHandlerPin(advertPin);
-    }
+    mapFiltersForm.forEach(function (element) {
+      element.disabled = false;
+      element.addEventListener('change', mapSelectFilterChangeHandler);
+    });
+
+    similarAdvertPins.forEach(function (element) {
+      element.addEventListener('click', function (evt) {
+        buttonClickHandler(evt, window.data.adverts);
+      });
+    });
   };
 
   /**
@@ -91,9 +129,6 @@
     };
 
     var mainPinMouseMoveHandler = function (moveEvt) {
-      if (noticeForm.classList.contains('notice__form--disabled')) {
-        makePageActive();
-      }
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
@@ -103,7 +138,6 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-
       // ограничение области куда можно поставить метку
       if ((mainPin.offsetTop - shift.y) < TOP_Y_BORDER) {
         mainPin.style.top = TOP_Y_BORDER + 'px';
@@ -123,6 +157,10 @@
     };
 
     var mainPinMouseUpHandler = function () {
+      if (noticeForm.classList.contains('notice__form--disabled')) {
+        makePageActive();
+      }
+
       document.removeEventListener('mousemove', mainPinMouseMoveHandler);
       document.removeEventListener('mouseup', mainPinMouseUpHandler);
     };
@@ -134,28 +172,21 @@
   mainPin.addEventListener('mousedown', mainPinMouseDownHandler);
 
   /**
-   * Функция добавляет обработчик события клика к переданному в нее объекту метки
-   * @param {object} advertPin  DOM объект метки
-   */
-  var addHandlerPin = function (advertPin) {
-    advertPin.addEventListener('click', buttonClickHandler);
-  };
-
-  /**
-   * Функция-обработчик события, генерирует соответственный бъект карточки
-   * объявления и добавляет обработчик события для закрытия карточки.
+   * Функция-обработчик события, после клика по метке генерирует бъект её карточки
+   * добавляет обработчик события для закрытия карточки.
    * Также перед открытием следующих карточек - проверяет есть ли открытые и удаляет их.
    * @param {object} evt
+   * @param {array}  arr  массив с объектами объявлений
    */
-  var buttonClickHandler = function (evt) {
+  var buttonClickHandler = function (evt, arr) {
     closeOpenedCards();
     var evtImgClick = evt.path[1].dataset.id;
     var evtBorderClick = evt.path[0].dataset.id;
     if (evt.path[0].tagName === 'IMG') {
-      mapPopup.insertBefore(window.card.addToMap(window.data.adverts, window.card.renderAdvert, evtImgClick), referenceElement);
+      mapPopup.insertBefore(window.card.addToMap(arr, window.card.renderAdvert, evtImgClick), referenceElement);
       addHandlerToAdvertCard(document.querySelector('article.map__card'));
     } else {
-      mapPopup.insertBefore(window.card.addToMap(window.data.adverts, window.card.renderAdvert, evtBorderClick), referenceElement);
+      mapPopup.insertBefore(window.card.addToMap(arr, window.card.renderAdvert, evtBorderClick), referenceElement);
       addHandlerToAdvertCard(document.querySelector('article.map__card'));
     }
   };
@@ -168,6 +199,7 @@
     if (mapPopup.contains(mapCard)) {
       mapPopup.removeChild(mapCard);
     }
+    document.removeEventListener('keydown', escButtonDocumentHandler);
   };
 
   /**
@@ -178,14 +210,15 @@
   var addHandlerToAdvertCard = function (advertCard) {
     var popupClose = advertCard.querySelector('button.popup__close');
     popupClose.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.util.ENTER_KEYCODE) {
-        advertCard.classList.add('hidden');
+      if (evt.keyCode === window.data.ENTER_KEYCODE) {
+        closeOpenedCards();
+        document.removeEventListener('keydown', escButtonDocumentHandler);
       }
     });
 
-    var escButtonDocumentHandler = function (evt) {
-      if (evt.keyCode === window.util.ESCAPE_KEYCODE) {
-        advertCard.classList.add('hidden');
+    escButtonDocumentHandler = function (evt) {
+      if (evt.keyCode === window.data.ESCAPE_KEYCODE) {
+        closeOpenedCards();
         document.removeEventListener('keydown', escButtonDocumentHandler);
       }
     };
@@ -193,7 +226,8 @@
     document.addEventListener('keydown', escButtonDocumentHandler);
 
     popupClose.addEventListener('click', function () {
-      advertCard.classList.add('hidden');
+      closeOpenedCards();
+      document.removeEventListener('keydown', escButtonDocumentHandler);
     });
   };
 

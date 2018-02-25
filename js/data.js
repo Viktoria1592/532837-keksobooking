@@ -1,8 +1,12 @@
 'use strict';
 
 (function () {
-  var adverts;
+  var ENTER_KEYCODE = 13;
+  var ESCAPE_KEYCODE = 27;
+
   window.data = {
-    adverts: adverts
+    adverts: [],
+    ENTER_KEYCODE: ENTER_KEYCODE,
+    ESCAPE_KEYCODE: ESCAPE_KEYCODE,
   };
 })();
