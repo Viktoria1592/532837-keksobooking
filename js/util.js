@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var lastTimeout;
+
   /**
    * Функция генерирующая случайное значение
    * в диапазоне от min до max
@@ -123,6 +125,18 @@
     }
   };
 
+  /**
+   * функция предотвращает дребежание у переданной в нее функции
+   * @param {function} func
+   * @param {number}   debounceInterval
+   */
+  var debounce = function (func, debounceInterval) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(func, debounceInterval);
+  };
+
   window.util = {
     generateArrayWithRandomLenght: generateArrayWithRandomLenght,
     shuffleArray: shuffleArray,
@@ -130,6 +144,7 @@
     generateRandomNumber: generateRandomNumber,
     generateRandomArrayValue: generateRandomArrayValue,
     onError: onError,
-    drawMessage: drawMessage
+    drawMessage: drawMessage,
+    debounce: debounce
   };
 })();

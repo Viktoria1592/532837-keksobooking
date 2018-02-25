@@ -79,7 +79,7 @@
    * Функция-обработчик события, добавляет на карту отфильтрованые метки
    */
   var mapSelectFilterChangeHandler = function () {
-    window.debounce(function () {
+    window.util.debounce(function () {
       removeAdvertPins();
       closeOpenedCards();
       var filteredArray = window.data.adverts.filter(window.similar.checkAccordance);
