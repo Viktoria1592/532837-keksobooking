@@ -189,6 +189,8 @@
   var fileChooserImages = document.querySelector('#images');
   var preview = document.querySelector('.notice__preview img');
   var photoContainer = document.querySelector('fieldset:nth-last-child(2)');
+  var dropZone = document.querySelector('.drop-zone');
+  var dropZoneMultiple = document.querySelector('.form__photo-container .upload .drop-zone');
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var uploadOneFile = function (file, previewImageField) {
@@ -208,23 +210,6 @@
       reader.readAsDataURL(file);
     }
   };
-
-  var druggOverDropZoneHandler = function (evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-  };
-
-  fileChooserAvatar.addEventListener('change', function () {
-    uploadOneFile(fileChooserAvatar.files[0], preview);
-  });
-
-  var dropZone = document.querySelector('.drop-zone');
-  dropZone.addEventListener('dragover', druggOverDropZoneHandler);
-  dropZone.addEventListener('drop', function (evt) {
-    evt.preventDefault();
-    uploadOneFile(evt.dataTransfer.files[0], preview);
-  });
-
 
   var uploadMultipleFiles = function (files, previewImageField) {
     var matches = [].every.call(files, function (file) {
@@ -254,9 +239,31 @@
     }
   };
 
+  var druggOverDropZoneHandler = function (evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+  };
+
+  fileChooserAvatar.addEventListener('change', function () {
+    uploadOneFile(fileChooserAvatar.files[0], preview);
+  });
+
   fileChooserImages.addEventListener('change', function () {
     uploadMultipleFiles(fileChooserImages.files, photoContainer);
   });
+
+  dropZone.addEventListener('dragover', druggOverDropZoneHandler);
+  dropZone.addEventListener('drop', function (evt) {
+    evt.preventDefault();
+    uploadOneFile(evt.dataTransfer.files[0], preview);
+  });
+
+  dropZoneMultiple.addEventListener('dragover', druggOverDropZoneHandler);
+  dropZoneMultiple.addEventListener('drop', function (evt) {
+    evt.preventDefault();
+    uploadMultipleFiles(evt.dataTransfer.files, photoContainer);
+  });
+
 
   window.form = {
     roomNumberSelectClickHandler: roomNumberSelectClickHandler,
