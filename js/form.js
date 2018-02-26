@@ -171,9 +171,16 @@
   var returnsPageToInitialState = function () {
     window.map.removeAdvertPins();
     clearForm();
+    removePreviewImages();
     window.map.returnsMapInitialState();
   };
 
+  var removePreviewImages = function () {
+    document.querySelector('.notice__preview img').src = 'img/muffin.png';
+    document.querySelectorAll('div.form__photo').forEach(function (item) {
+      item.remove();
+    });
+  };
 
   var fileChooserAvatar = document.querySelector('#avatar');
   var fileChooserImages = document.querySelector('#images');
