@@ -742,6 +742,10 @@ fieldset:nth-last-child(2) {
     width: 140px;
 }
 
+.form__photo:hover {
+  cursor: move;
+}
+
 .form__element--submit
 {
     width: 100%;

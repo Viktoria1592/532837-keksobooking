@@ -175,6 +175,9 @@
     window.map.returnsMapInitialState();
   };
 
+  /**
+   * функция восстанавливает поля загрузки изображений в исходное состояние
+   */
   var removePreviewImages = function () {
     document.querySelector('.notice__preview img').src = 'img/muffin.png';
     document.querySelectorAll('div.form__photo').forEach(function (item) {
@@ -186,40 +189,73 @@
   var fileChooserImages = document.querySelector('#images');
   var preview = document.querySelector('.notice__preview img');
   var photoContainer = document.querySelector('fieldset:nth-last-child(2)');
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
-  var loadImage = function (inputTypeFile, previewImageField) {
+  var uploadOneFile = function (file, previewImageField) {
+    var fileName = file.name.toLowerCase();
 
-    inputTypeFile.addEventListener('change', function () {
-      var file = inputTypeFile.files[0];
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
       var reader = new FileReader();
 
-      reader.addEventListener('load', function (evt) {
-        previewImageField.src = evt.target.result;
+      reader.addEventListener('load', function () {
+        previewImageField.src = reader.result;
       });
 
       reader.readAsDataURL(file);
-    });
+    }
   };
 
-  loadImage(fileChooserAvatar, preview);
+  var druggOverDropZoneHandler = function (evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+  };
+
+  fileChooserAvatar.addEventListener('change', function () {
+    uploadOneFile(fileChooserAvatar.files[0], preview);
+  });
+
+  var dropZone = document.querySelector('.drop-zone');
+  dropZone.addEventListener('dragover', druggOverDropZoneHandler);
+  dropZone.addEventListener('drop', function (evt) {
+    evt.preventDefault();
+    uploadOneFile(evt.dataTransfer.files[0], preview);
+  });
+
+
+  var uploadMultipleFiles = function (files, previewImageField) {
+    var matches = [].every.call(files, function (file) {
+      var fileName = file.name.toLowerCase();
+      return FILE_TYPES.some(function (item) {
+        return fileName.endsWith(item);
+      });
+    });
+
+    if (matches) {
+      [].forEach.call(files, function (item) {
+        var reader = new FileReader();
+        var formPhoto = document.createElement('div');
+        formPhoto.classList.add('form__photo');
+        formPhoto.style = 'display: inline-block';
+        formPhoto.draggable = true;
+        var photo = document.createElement('img');
+        photo.height = 70;
+        photo.title = item.name;
+        formPhoto.appendChild(photo);
+        previewImageField.appendChild(formPhoto);
+        reader.addEventListener('load', function (evt) {
+          photo.src = evt.target.result;
+        });
+        reader.readAsDataURL(item);
+      });
+    }
+  };
 
   fileChooserImages.addEventListener('change', function () {
-    var files = fileChooserImages.files;
-    [].forEach.call(files, function (item) {
-      var reader = new FileReader();
-      var formPhoto = document.createElement('div');
-      formPhoto.classList.add('form__photo');
-      formPhoto.style = 'display: inline-block';
-      var photo = document.createElement('img');
-      photo.height = 70;
-      photo.title = item.name;
-      formPhoto.appendChild(photo);
-      photoContainer.appendChild(formPhoto);
-      reader.addEventListener('load', function (evt) {
-        photo.src = evt.target.result;
-      });
-      reader.readAsDataURL(item);
-    });
+    uploadMultipleFiles(fileChooserImages.files, photoContainer);
   });
 
   window.form = {
