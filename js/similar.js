@@ -22,7 +22,7 @@
    * @return {boolean} true в случае соответствия фильтру, false в обратном случае
    */
   var checkAccordance = function (item) {
-    var counter = true;
+    var state = true;
     if (housingType.value !== item.offer.type && housingType.value !== 'any') {
       return false;
     }
@@ -39,11 +39,11 @@
     housingFeatures.forEach(function (element) {
       if (element.checked) {
         if (!item.offer.features.includes(element.value)) {
-          counter = false;
+          state = false;
         }
       }
     });
-    return counter;
+    return state;
   };
 
   window.similar = {

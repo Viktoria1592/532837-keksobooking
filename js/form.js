@@ -175,6 +175,46 @@
   };
 
 
+  var fileChooserAvatar = document.querySelector('#avatar');
+  var fileChooserImages = document.querySelector('#images');
+  var preview = document.querySelector('.notice__preview img');
+  var photoContainer = document.querySelector('fieldset:nth-last-child(2)');
+
+  var loadImage = function (inputTypeFile, previewImageField) {
+
+    inputTypeFile.addEventListener('change', function () {
+      var file = inputTypeFile.files[0];
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function (evt) {
+        previewImageField.src = evt.target.result;
+      });
+
+      reader.readAsDataURL(file);
+    });
+  };
+
+  loadImage(fileChooserAvatar, preview);
+
+  fileChooserImages.addEventListener('change', function () {
+    var files = fileChooserImages.files;
+    [].forEach.call(files, function (item) {
+      var reader = new FileReader();
+      var formPhoto = document.createElement('div');
+      formPhoto.classList.add('form__photo');
+      formPhoto.style = 'display: inline-block';
+      var photo = document.createElement('img');
+      photo.height = 70;
+      photo.title = item.name;
+      formPhoto.appendChild(photo);
+      photoContainer.appendChild(formPhoto);
+      reader.addEventListener('load', function (evt) {
+        photo.src = evt.target.result;
+      });
+      reader.readAsDataURL(item);
+    });
+  });
+
   window.form = {
     roomNumberSelectClickHandler: roomNumberSelectClickHandler,
     findMainPinAddress: findMainPinAddress,
