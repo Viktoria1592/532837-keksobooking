@@ -37,10 +37,8 @@
     }
 
     housingFeatures.forEach(function (element) {
-      if (element.checked) {
-        if (!item.offer.features.includes(element.value)) {
-          state = false;
-        }
+      if (element.checked && !item.offer.features.includes(element.value)) {
+        state = false;
       }
     });
     return state;

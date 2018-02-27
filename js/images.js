@@ -1,17 +1,19 @@
 'use strict';
 
 (function () {
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var PHOTO_HEIGHT = 70;
+
   var fileChooserAvatar = document.querySelector('#avatar');
   var fileChooserImages = document.querySelector('#images');
   var preview = document.querySelector('.notice__preview img');
   var photoContainer = document.querySelector('fieldset:nth-last-child(2)');
   var dropZone = document.querySelector('.drop-zone');
   var dropZoneMultiple = document.querySelector('.form__photo-container .upload .drop-zone');
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var draggedImage = null;
 
   /**
-   * Функция загружает файл изображение в переданную в неё область
+   * Функция загружает файл изображения в переданную в неё область
    * @param {file} file               изображение
    * @param {node} previewImageField  нода в какую нужно загрузить изображение
    */
@@ -36,7 +38,7 @@
   };
 
   /**
-   * Функция загружает файлы изображение в переданную в неё область
+   * Функция загружает файлы изображений в переданную в неё область
    * и добавляет обработчики событий для реализации сортровки изображений
    * @param {files} files               массив изображений
    * @param {node}  previewImageField   нода в какую нужно загрузить изображения
@@ -54,22 +56,27 @@
       [].forEach.call(files, function (item) {
         var reader = new FileReader();
         var formPhoto = document.createElement('div');
+        var photo = document.createElement('img');
+
         formPhoto.classList.add('form__photo');
         formPhoto.style = 'display: inline-block';
-        var photo = document.createElement('img');
-        photo.height = 70;
+        photo.height = PHOTO_HEIGHT;
         photo.draggable = true;
         formPhoto.appendChild(photo);
         fragment.appendChild(formPhoto);
+
         reader.addEventListener('load', function (evt) {
           photo.src = evt.target.result;
         });
+
         reader.readAsDataURL(item);
+
         photo.addEventListener('dragstart', imageDragStartHandler);
         photo.addEventListener('dragover', imageDragOverHandler);
         photo.addEventListener('dragleave', imageDragLeaveHandler);
         photo.addEventListener('drop', imageDropHandler);
       });
+
       previewImageField.appendChild(fragment);
     } else {
       window.util.drawMessage('Неверный формат изображения');
@@ -151,6 +158,7 @@
    */
   var imageDropHandler = function (evt) {
     var currentTarget = evt.target.src;
+
     evt.target.src = draggedImage.src;
     draggedImage.src = currentTarget;
     evt.target.style = 'transform: scale(1)';
