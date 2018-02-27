@@ -41,7 +41,7 @@
     map.classList.add('map--faded');
     mainPin.style.top = MAIN_PIN_INITIAL_STATE_TOP;
     mainPin.style.left = MAIN_PIN_INITIAL_STATE_LEFT;
-    document.querySelector('#address').value = '' + (mainPin.offsetTop + (mainPin.offsetHeight / 2)) + ', ' + (mainPin.offsetLeft + (mainPin.offsetWidth / 2)) + '';
+    document.querySelector('#address').value = '' + mainPin.offsetTop + ', ' + mainPin.offsetLeft + '';
   };
 
   returnsMapInitialState();
@@ -139,10 +139,12 @@
         y: moveEvt.clientY
       };
       // ограничение области куда можно поставить метку
-      if ((mainPin.offsetTop - shift.y) < TOP_Y_BORDER) {
-        mainPin.style.top = TOP_Y_BORDER + 'px';
-      } else if ((mainPin.offsetTop - shift.y) > BOTTOM_Y_BORDER) {
-        mainPin.style.top = BOTTOM_Y_BORDER + 'px';
+      var yTopCorrection = TOP_Y_BORDER - (mainPin.offsetHeight / 2 + window.form.MAIN_PIN_CORNER_HEIGHT);
+      var yBottomCorrection = BOTTOM_Y_BORDER - (mainPin.offsetHeight / 2 + window.form.MAIN_PIN_CORNER_HEIGHT);
+      if ((mainPin.offsetTop - shift.y) < yTopCorrection) {
+        mainPin.style.top = yTopCorrection + 'px';
+      } else if ((mainPin.offsetTop - shift.y) > yBottomCorrection) {
+        mainPin.style.top = yBottomCorrection + 'px';
       } else {
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       }

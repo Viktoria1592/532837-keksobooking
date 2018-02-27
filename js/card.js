@@ -79,18 +79,20 @@
      */
   var renderAdvertCard = function (advert, uniqueIDNumber) {
     var newCard = cardTemplate.cloneNode(true);
+
     newCard.querySelector('h3').textContent = advert.offer.title;
     newCard.querySelector('p small').textContent = advert.location.x + (MAP_PIN_FULL_WIDTH / 2) + ', ' + (advert.location.y + MAP_PIN_FULL_HEIGHT) + '';
     newCard.querySelector('.popup__price').textContent = advert.offer.price + ' \u20BD/ночь';
     newCard.querySelector('h4').textContent = typeLabels[advert.offer.type];
     newCard.querySelector('h4 + p').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
     newCard.querySelector('h4 + p + p').textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
-    addAdvertFeatures(advert, newCard);
     newCard.querySelector('p:last-of-type').textContent = advert.offer.description;
-    addAdvertImages(advert, newCard);
     newCard.querySelector('img.popup__avatar').src = advert.author.avatar;
-    newCard.dataset.id = uniqueIDNumber;
     newCard.querySelector('button.popup__close').tabIndex = 0;
+
+    addAdvertFeatures(advert, newCard);
+    addAdvertImages(advert, newCard);
+    newCard.dataset.id = uniqueIDNumber;
 
     return newCard;
   };

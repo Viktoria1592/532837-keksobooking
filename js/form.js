@@ -1,19 +1,22 @@
 'use strict';
 
 (function () {
-  var MAIN_MAP_PIN_FULL_HEIGHT = 87;
+  var MAIN_PIN_HEIGHT = document.querySelector('.map__pin--main').offsetHeight;
+  var MAIN_PIN_CORNER_HEIGHT = 14.5;
+
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
   var timeInOptions = document.querySelectorAll('#timein option');
   var timeOutOptions = document.querySelectorAll('#timeout option');
   var capacity = document.querySelector('#capacity');
   var roomSelector = document.querySelector('#room_number');
-  var mapPinMain = document.querySelector('button.map__pin--main');
+  var mainPin = document.querySelector('button.map__pin--main');
   var capacitySelectorOptions = document.querySelectorAll('#capacity option');
   var submitButton = document.querySelector('button.form__submit');
   var form = document.querySelector('form.notice__form');
   var mapFiltersForm = document.querySelector('.map__filters');
   var formReset = document.querySelector('.form__reset');
+  var addressField = document.querySelector('#address');
 
 
   /**
@@ -43,8 +46,6 @@
   var timeOutClickHandler = function () {
     changeTime(timeOutOptions, timeInOptions);
   };
-  timeIn.addEventListener('change', timeInClickHandler);
-  timeOut.addEventListener('change', timeOutClickHandler);
 
   /**
    * функция делает невозможным выбор в "Количество мест" несовпадающих значений с "Кол-во комнат"
@@ -77,8 +78,6 @@
   var roomNumberSelectClickHandler = function () {
     syncRoomsVsGuests(roomSelector.value);
   };
-
-  roomSelector.addEventListener('click', roomNumberSelectClickHandler);
 
   /**
    * Обработчик событий, по нажатии на кнопку Опубликовать - проверяет
@@ -118,7 +117,7 @@
    * Функция которая устанавливает значение в поле ввода адреса
    */
   var findMainPinAddress = function () {
-    document.querySelector('#address').value = '' + (mapPinMain.offsetTop + MAIN_MAP_PIN_FULL_HEIGHT) + ', ' + mapPinMain.offsetLeft + '';
+    addressField.value = '' + (mainPin.offsetTop + (MAIN_PIN_HEIGHT / 2) + MAIN_PIN_CORNER_HEIGHT) + ', ' + mainPin.offsetLeft + '';
   };
 
   /**
@@ -185,10 +184,16 @@
     });
   };
 
+  timeIn.addEventListener('change', timeInClickHandler);
+  timeOut.addEventListener('change', timeOutClickHandler);
+  roomSelector.addEventListener('click', roomNumberSelectClickHandler);
+
+
   window.form = {
     roomNumberSelectClickHandler: roomNumberSelectClickHandler,
     findMainPinAddress: findMainPinAddress,
     flatTypeSelectClickHandler: flatTypeSelectClickHandler,
-    upload: addHandlersToFormButtons
+    upload: addHandlersToFormButtons,
+    MAIN_PIN_CORNER_HEIGHT: MAIN_PIN_CORNER_HEIGHT
   };
 })();
