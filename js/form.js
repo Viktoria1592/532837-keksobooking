@@ -192,6 +192,7 @@
   var dropZone = document.querySelector('.drop-zone');
   var dropZoneMultiple = document.querySelector('.form__photo-container .upload .drop-zone');
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var draggedImage = null;
 
   var uploadOneFile = function (file, previewImageField) {
     var fileName = file.name.toLowerCase();
@@ -208,10 +209,13 @@
       });
 
       reader.readAsDataURL(file);
+    } else {
+      window.util.drawMessage('Неверный формат изображения');
     }
   };
 
   var uploadMultipleFiles = function (files, previewImageField) {
+    var fragment = document.createDocumentFragment();
     var matches = [].every.call(files, function (file) {
       var fileName = file.name.toLowerCase();
       return FILE_TYPES.some(function (item) {
@@ -225,21 +229,27 @@
         var formPhoto = document.createElement('div');
         formPhoto.classList.add('form__photo');
         formPhoto.style = 'display: inline-block';
-        formPhoto.draggable = true;
         var photo = document.createElement('img');
         photo.height = 70;
-        photo.title = item.name;
+        photo.draggable = true;
         formPhoto.appendChild(photo);
-        previewImageField.appendChild(formPhoto);
+        fragment.appendChild(formPhoto);
         reader.addEventListener('load', function (evt) {
           photo.src = evt.target.result;
         });
         reader.readAsDataURL(item);
+        photo.addEventListener('dragstart', imageDragStartHandler);
+        photo.addEventListener('dragover', imageDragOverHandler);
+        photo.addEventListener('dragleave', imageDragLeaveHandler);
+        photo.addEventListener('drop', imageDropHandler);
       });
+      previewImageField.appendChild(fragment);
+    } else {
+      window.util.drawMessage('Неверный формат изображения');
     }
   };
 
-  var druggOverDropZoneHandler = function (evt) {
+  var dragOverDropZoneHandler = function (evt) {
     evt.stopPropagation();
     evt.preventDefault();
   };
@@ -252,17 +262,40 @@
     uploadMultipleFiles(fileChooserImages.files, photoContainer);
   });
 
-  dropZone.addEventListener('dragover', druggOverDropZoneHandler);
+  dropZone.addEventListener('dragover', dragOverDropZoneHandler);
   dropZone.addEventListener('drop', function (evt) {
     evt.preventDefault();
     uploadOneFile(evt.dataTransfer.files[0], preview);
   });
 
-  dropZoneMultiple.addEventListener('dragover', druggOverDropZoneHandler);
+  dropZoneMultiple.addEventListener('dragover', dragOverDropZoneHandler);
   dropZoneMultiple.addEventListener('drop', function (evt) {
     evt.preventDefault();
     uploadMultipleFiles(evt.dataTransfer.files, photoContainer);
   });
+
+  var imageDragStartHandler = function (evt) {
+    draggedImage = evt.target;
+    evt.dataTransfer.setData('text/plain', evt.target.alt);
+  };
+
+  var imageDragOverHandler = function (evt) {
+    evt.preventDefault();
+    evt.target.style = 'transform: scale(1.2)';
+    return false;
+  };
+
+  var imageDragLeaveHandler = function (evt) {
+    evt.target.style = 'transform: scale(1)';
+  };
+
+  var imageDropHandler = function (evt) {
+    var currentTarget = evt.target.src;
+    evt.target.src = draggedImage.src;
+    draggedImage.src = currentTarget;
+    evt.target.style = 'transform: scale(1)';
+
+  };
 
 
   window.form = {
