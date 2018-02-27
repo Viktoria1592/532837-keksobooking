@@ -7,13 +7,11 @@
   var housingGuests = document.querySelector('#housing-guests');
   var housingFeatures = document.querySelectorAll('#housing-features input');
 
-  var mapFilters = {
-    'housing-price': {
-      'any': [0, 100000000000000000],
-      'middle': [10000, 50000],
-      'low': [0, 10000],
-      'high': [50000, 100000000000000000]
-    }
+  var housingPriceFilter = {
+    'any': [0, 100000000000000000],
+    'middle': [10000, 50000],
+    'low': [0, 10000],
+    'high': [50000, 100000000000000000]
   };
 
   /**
@@ -26,7 +24,7 @@
     if (housingType.value !== item.offer.type && housingType.value !== 'any') {
       return false;
     }
-    if (mapFilters[housingPrice.id][housingPrice.value][0] > item.offer.price && mapFilters[housingPrice.id][housingPrice.value][1] < item.offer.price) {
+    if (housingPriceFilter[housingPrice.value][0] >= item.offer.price || housingPriceFilter[housingPrice.value][1] < item.offer.price) {
       return false;
     }
     if (parseInt(housingRooms.value, 10) !== parseInt(item.offer.rooms, 10) && housingRooms.value !== 'any') {
