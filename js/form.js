@@ -179,9 +179,11 @@
    */
   var removePreviewImages = function () {
     document.querySelector('.notice__preview img').src = 'img/muffin.png';
-    document.querySelectorAll('div.form__photo').forEach(function (item) {
-      item.remove();
-    });
+    var formPhoto = document.querySelectorAll('div.form__photo');
+
+    for (var i = 0; i < formPhoto.length; i++) {
+      formPhoto[i].remove();
+    }
   };
 
   timeIn.addEventListener('change', timeInClickHandler);

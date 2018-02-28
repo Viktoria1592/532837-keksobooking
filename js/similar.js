@@ -34,11 +34,12 @@
       return false;
     }
 
-    housingFeatures.forEach(function (element) {
-      if (element.checked && !item.offer.features.includes(element.value)) {
+    for (var i = 0; i < housingFeatures.length; i++) {
+      if (housingFeatures[i].checked && !item.offer.features.includes(housingFeatures[i].value)) {
         state = false;
       }
-    });
+    }
+
     return state;
   };
 
