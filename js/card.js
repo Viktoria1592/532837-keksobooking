@@ -62,8 +62,8 @@
      * добавляет готовую карточку объявления в DocumentFragment
      * @param   {array}    advertsArray   массив с объектами объявлений
      * @param   {function} renderFunction функция заполняющая шаблон данными из advertsArray
-     * @param   {number}    elementId     ID карточки
-     * @return {Node}                    DOM элемент с карточкой
+     * @param   {number}   elementId      ID карточки
+     * @return  {Node}                    DOM элемент с карточкой
      */
   var addCardToMap = function (advertsArray, renderFunction, elementId) {
     var fragment = document.createDocumentFragment();
@@ -73,9 +73,9 @@
 
     /**
      * Функция заполняющая шаблон карточки объявления деталями
-     * @param  {object} advert            объект с данными об объявлении
-     * @param  {number} uniqueIDNumber уникальное число объекта, передается в класс
-     * @return {Node}                     DOM-элемент объявления
+     * @param  {object} advert          объект с данными об объявлении
+     * @param  {number} uniqueIDNumber  уникальное число объекта, передается в класс
+     * @return {Node}                   DOM-элемент объявления
      */
   var renderAdvertCard = function (advert, uniqueIDNumber) {
     var newCard = cardTemplate.cloneNode(true);
