@@ -26,17 +26,17 @@
   var returnsMapInitialState = function () {
     noticeForm.classList.add('notice__form--disabled');
 
-    noticeFormFieldsets.forEach(function (element) {
-      element.disabled = true;
-    });
+    for (var i = 0; i < noticeFormFieldsets.length; i++) {
+      noticeFormFieldsets[i].disabled = true;
+    }
 
     if (document.querySelectorAll('.map .map__card').length > 0) {
       closeOpenedCards();
     }
 
-    mapFiltersForm.forEach(function (element) {
-      element.disabled = true;
-    });
+    for (var j = 0; j < mapFiltersForm.length; j++) {
+      mapFiltersForm[j].disabled = true;
+    }
 
     map.classList.add('map--faded');
     mainPin.style.top = MAIN_PIN_INITIAL_STATE_TOP;
@@ -53,9 +53,10 @@
   var makePageActive = function () {
     noticeForm.classList.remove('notice__form--disabled');
 
-    noticeFormFieldsets.forEach(function (element) {
-      element.disabled = false;
-    });
+
+    for (var i = 0; i < noticeFormFieldsets.length; i++) {
+      noticeFormFieldsets[i].disabled = false;
+    }
 
     map.classList.remove('map--faded');
     var flatTypeInput = document.querySelector('#type');
@@ -71,9 +72,9 @@
   var removeAdvertPins = function () {
     var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
 
-    similarAdvertPins.forEach(function (element) {
-      element.remove();
-    });
+    for (var i = 0; i < similarAdvertPins.length; i++) {
+      similarAdvertPins[i].remove();
+    }
   };
 
   /**
@@ -86,11 +87,12 @@
       var filteredArray = window.data.adverts.filter(window.similar.checkAccordance);
       mapPins.appendChild(window.pin.fragmentFilling(filteredArray, window.pin.renderAdvertLabel));
       var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
-      similarAdvertPins.forEach(function (element) {
-        element.addEventListener('click', function (evt) {
+
+      for (var i = 0; i < similarAdvertPins.length; i++) {
+        similarAdvertPins[i].addEventListener('click', function (evt) {
           buttonClickHandler(evt, filteredArray);
         });
-      });
+      }
     }, DEBOUNCE_INTERVAL);
   };
 
@@ -103,16 +105,16 @@
     mapPins.appendChild(window.pin.fragmentFilling(arrayOfAdverts, window.pin.renderAdvertLabel));
     var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
 
-    mapFiltersForm.forEach(function (element) {
-      element.disabled = false;
-      element.addEventListener('change', mapSelectFilterChangeHandler);
-    });
+    for (var i = 0; i < mapFiltersForm.length; i++) {
+      mapFiltersForm[i].disabled = false;
+      mapFiltersForm[i].addEventListener('change', mapSelectFilterChangeHandler);
+    }
 
-    similarAdvertPins.forEach(function (element) {
-      element.addEventListener('click', function (evt) {
+    for (var j = 0; j < similarAdvertPins.length; j++) {
+      similarAdvertPins[j].addEventListener('click', function (evt) {
         buttonClickHandler(evt, window.data.adverts);
       });
-    });
+    }
   };
 
   /**
@@ -182,15 +184,9 @@
    */
   var buttonClickHandler = function (evt, arr) {
     closeOpenedCards();
-    var evtImgClick = evt.path[1].dataset.id;
-    var evtBorderClick = evt.path[0].dataset.id;
-    if (evt.path[0].tagName === 'IMG') {
-      mapPopup.insertBefore(window.card.addToMap(arr, window.card.renderAdvert, evtImgClick), referenceElement);
-      addHandlerToAdvertCard(document.querySelector('article.map__card'));
-    } else {
-      mapPopup.insertBefore(window.card.addToMap(arr, window.card.renderAdvert, evtBorderClick), referenceElement);
-      addHandlerToAdvertCard(document.querySelector('article.map__card'));
-    }
+    var evtImgClick = evt.currentTarget.dataset.id;
+    mapPopup.insertBefore(window.card.addToMap(arr, window.card.renderAdvert, evtImgClick), referenceElement);
+    addHandlerToAdvertCard(document.querySelector('article.map__card'));
   };
 
   /**
