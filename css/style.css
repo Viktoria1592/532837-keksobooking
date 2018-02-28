@@ -733,9 +733,17 @@ textarea:focus
     color: #ff5635;
 }
 
+fieldset:nth-last-child(2) {
+
+}
+
 .form__photo-container
 {
     width: 140px;
+}
+
+.form__photo:hover {
+  cursor: move;
 }
 
 .form__element--submit
