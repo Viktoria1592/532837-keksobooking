@@ -20,22 +20,34 @@
    * @return {boolean} true в случае соответствия фильтру, false в обратном случае
    */
   var checkAccordance = function (item) {
+    var priceLowValue = housingPriceFilter[housingPrice.value][0];
+    var priceHighValue = housingPriceFilter[housingPrice.value][1];
+    var typeValue = housingType.value;
+    var roomsVale = parseInt(housingRooms.value, 10);
+    var roomsValue = housingRooms.value;
+    var housingValue = housingGuests.value;
+    var itemGuests = item.offer.guests;
+    var itemType = item.offer.type;
+    var itemPrice = item.offer.price;
+    var itemRooms = item.offer.rooms;
+    var itemFeatures = item.offer.features;
     var state = true;
-    if (housingType.value !== item.offer.type && housingType.value !== 'any') {
+
+    if (typeValue !== itemType && typeValue !== 'any') {
       return false;
     }
-    if (housingPriceFilter[housingPrice.value][0] >= item.offer.price || housingPriceFilter[housingPrice.value][1] < item.offer.price) {
+    if (priceLowValue >= itemPrice || priceHighValue < itemPrice) {
       return false;
     }
-    if (parseInt(housingRooms.value, 10) !== parseInt(item.offer.rooms, 10) && housingRooms.value !== 'any') {
+    if (roomsVale !== itemRooms && roomsValue !== 'any') {
       return false;
     }
-    if (parseInt(housingGuests.value, 10) !== parseInt(item.offer.guests, 10) && housingGuests.value !== 'any') {
+    if (roomsVale !== itemGuests && housingValue !== 'any') {
       return false;
     }
 
     for (var i = 0; i < housingFeatures.length; i++) {
-      if (housingFeatures[i].checked && !item.offer.features.includes(housingFeatures[i].value)) {
+      if (housingFeatures[i].checked && !itemFeatures.includes(housingFeatures[i].value)) {
         state = false;
       }
     }
