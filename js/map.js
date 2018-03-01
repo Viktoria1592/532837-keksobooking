@@ -85,7 +85,7 @@
       removeAdvertPins();
       closeOpenedCards();
       var filteredArray = window.data.adverts.filter(window.similar.checkAccordance);
-      mapPins.appendChild(window.pin.fragmentFilling(filteredArray, window.pin.renderAdvertLabel));
+      mapPins.appendChild(window.pin.fragmentFilling(filteredArray, window.pin.renderAdvertPin));
       var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
 
       for (var i = 0; i < similarAdvertPins.length; i++) {
@@ -102,7 +102,7 @@
    */
   var onSuccess = function (arrayOfAdverts) {
     window.data.adverts = arrayOfAdverts;
-    mapPins.appendChild(window.pin.fragmentFilling(arrayOfAdverts, window.pin.renderAdvertLabel));
+    mapPins.appendChild(window.pin.fragmentFilling(arrayOfAdverts, window.pin.renderAdvertPin));
     var similarAdvertPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
 
     for (var i = 0; i < mapFiltersForm.length; i++) {
@@ -140,22 +140,27 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-      // ограничение области куда можно поставить метку
       var yTopCorrection = TOP_Y_BORDER - (mainPin.offsetHeight / 2 + window.form.MAIN_PIN_CORNER_HEIGHT);
       var yBottomCorrection = BOTTOM_Y_BORDER - (mainPin.offsetHeight / 2 + window.form.MAIN_PIN_CORNER_HEIGHT);
-      if ((mainPin.offsetTop - shift.y) < yTopCorrection) {
+      var pinOffestTop = mainPin.offsetTop;
+      var pinOffsetLeft = mainPin.offsetLeft;
+
+      // ограничение области куда можно поставить метку по Y
+      if ((pinOffestTop - shift.y) < yTopCorrection) {
         mainPin.style.top = yTopCorrection + 'px';
-      } else if ((mainPin.offsetTop - shift.y) > yBottomCorrection) {
+      } else if ((pinOffestTop - shift.y) > yBottomCorrection) {
         mainPin.style.top = yBottomCorrection + 'px';
       } else {
-        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+        mainPin.style.top = (pinOffestTop - shift.y) + 'px';
       }
-      if ((mainPin.offsetLeft - shift.x) < LEFT_X_BORDER) {
+
+      // ограничение области куда можно поставить метку по X
+      if ((pinOffsetLeft - shift.x) < LEFT_X_BORDER) {
         mainPin.style.left = LEFT_X_BORDER + 'px';
-      } else if ((mainPin.offsetLeft - shift.x) > RIGHT_X_BORDER) {
+      } else if ((pinOffsetLeft - shift.x) > RIGHT_X_BORDER) {
         mainPin.style.left = RIGHT_X_BORDER + 'px';
       } else {
-        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+        mainPin.style.left = (pinOffsetLeft - shift.x) + 'px';
       }
       window.form.findMainPinAddress();
     };

@@ -7,6 +7,6 @@
   window.data = {
     adverts: [],
     ENTER_KEYCODE: ENTER_KEYCODE,
-    ESCAPE_KEYCODE: ESCAPE_KEYCODE,
+    ESCAPE_KEYCODE: ESCAPE_KEYCODE
   };
 })();

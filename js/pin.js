@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var templateOfLabel = document.querySelector('template').content.querySelector('article + button');
+  var pinTemplate = document.querySelector('template').content.querySelector('article + button');
   var quantityOfDisplayedPins = 5;
 
   /**
@@ -11,8 +11,8 @@
    * @param   {number} uniqueIDNumber уникальное число объекта, передается в класс
    * @return  {Node}                     DOM-элемент метки
    */
-  var renderAdvertLabel = function (advert, uniqueIDNumber) {
-    var newAdvert = templateOfLabel.cloneNode(true);
+  var renderAdvertPin = function (advert, uniqueIDNumber) {
+    var newAdvert = pinTemplate.cloneNode(true);
     newAdvert.style.left = advert.location.x + 'px';
     newAdvert.style.top = advert.location.y + 'px';
     newAdvert.querySelector('img').src = advert.author.avatar;
@@ -39,6 +39,6 @@
 
   window.pin = {
     fragmentFilling: fragmentFilling,
-    renderAdvertLabel: renderAdvertLabel
+    renderAdvertPin: renderAdvertPin
   };
 })();
